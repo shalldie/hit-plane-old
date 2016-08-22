@@ -1,0 +1,15 @@
+{
+  "name": "hit-plane",
+  "version": "1.0.0",
+  "description": "A game to hit planes.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "xxx.git"
+  },
+  "author": "shalldie",
+  "license": "ISC"
+}
