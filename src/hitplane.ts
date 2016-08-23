@@ -1,8 +1,3 @@
-declare var require: {
-    <T>(path: string): T;
-    (paths: string[], callback: (...modules: any[]) => void): void;
-    ensure: (paths: string[], callback: (require: <T>(path: string) => T) => void) => void;
-};
 
 // import Shape from './shape/Shape';
 
@@ -14,7 +9,6 @@ declare var require: {
 
 // import baseData from './img/boom.png';
 
-let baseData = require("!url!./img/plane.png");
 
 // require("!style!css!less!dd");
 
