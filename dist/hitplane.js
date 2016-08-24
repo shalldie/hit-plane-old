@@ -47,6 +47,13 @@
 	"use strict";
 	var Plane_1 = __webpack_require__(1);
 	var p = new Plane_1.default(1, 2, 3, 4);
+	var ele = document.createElement("canvas");
+	ele.style.cssText = "margin:50px auto;border:1px solid #2ad;display:block;";
+	document.body.appendChild(ele);
+	ele.width = 500;
+	ele.height = 300;
+	var ctx = ele.getContext("2d");
+	p.draw(ctx);
 
 
 /***/ },
