@@ -1,17 +1,6 @@
+import Boom from './Shape/Boom';
 
-// import Shape from './shape/Shape';
+import Plane from './Shape/Plane';
 
-// let s = new Shape(12, 21);
+let p = new Plane(1, 2, 3, 4);
 
-// console.log(s.x, s.y);
-
-// import './img/boom.png';
-
-// import baseData from './img/boom.png';
-
-
-// require("!style!css!less!dd");
-
-// var img = document.createElement('img');
-// img.src = baseData;
-// document.body.appendChild(img);

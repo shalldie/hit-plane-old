@@ -1,17 +1,17 @@
-import {imgBoom} from './../img/imgBase64';
+import {imgPlane} from './../img/imgBase64';
 import Shape from './Shape';
 
 let img = new Image();
-img.src = imgBoom;
+img.src = imgPlane;
 
 /**
- * 爆炸 ， 现充都去爆炸吧！！！
+ * 飞机，打飞机~ 大哥哥这是什么？呀！好长！诶？！好滑哦(๑• . •๑)！阿呜～
  * 
  * @export
- * @class Boom
+ * @class Plane
  * @extends {Shape}
  */
-export default class Boom extends Shape {
+export default class Plane extends Shape {
 
     /**
      * 原图中每张图片宽度
@@ -61,4 +61,5 @@ export default class Boom extends Shape {
     public draw(ctx: CanvasRenderingContext2D) {
 
     }
+
 }
