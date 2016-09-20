@@ -98,22 +98,6 @@ abstract class Shape {
     public abstract draw(ctx?: CanvasRenderingContext2D): void;
 
 
-    //     if (!this.img) return;
-
-    //     if (this.img) {
-    //         console.log(this.baseWidth, this.baseHeight, this.baseWidthNum);
-    //         return;
-    //     }
-
-    //     // drawImage（image，Sx，Sy，Sw，Sh，Dx，Dy，Dw，Sh）；
-
-    //     ctx.save();
-
-    //     ctx.drawImage(this.img, this.baseWidth * this.index, 0, this.baseWidth, this.baseHeight, this.x, this.y, this.width, this.height);
-
-    //     ctx.restore();
-    // }
-
 }
 
 export default Shape;
