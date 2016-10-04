@@ -16,6 +16,6 @@ export default class Boom extends Shape {
         super(x, y, width, height);
         this.img = img;
         this.imgSum = 14;
-        this.colourSpeed = 30;
+        this.colourSpeed = 40;
     }
 }

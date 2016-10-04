@@ -110,7 +110,7 @@ abstract class Shape {
      * 
      * @memberOf Shape
      */
-    public draw(ctx: CanvasRenderingContext2D): void {
+    public onPaint(ctx: CanvasRenderingContext2D): void {
         if (!this.alive) return;
         imgSpirit(ctx, this.img, this.colourSpeed, this.createTime, this.ifImgX, this.imgSum, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
     }

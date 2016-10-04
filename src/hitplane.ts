@@ -2,15 +2,16 @@ import Boom from './Shape/Boom';
 
 import Plane from './Shape/Plane';
 
+let bg = <HTMLDivElement>document.getElementById("bg");
+let ele = <HTMLCanvasElement>document.getElementById("demo");
 
-let ele = document.createElement("canvas");
+ele.height = document.body.clientHeight * 2;
+ele.width = ele.height * 512 / 768;
 
-ele.style.cssText = "margin:50px auto;border:1px solid #2ad;display:block;";
+ele.style.cssText = `transform:translate3d(-50%,-50%,0) scale(.5)`;
 
-document.body.appendChild(ele);
-
-ele.width = 500;
-ele.height = 300;
+bg.style.width = ele.width / 2 + "px";
+bg.style.height = ele.height + "px";
 
 let ctx = ele.getContext("2d");
 
@@ -18,7 +19,7 @@ var plane = new Plane(200, 200, 172, 200);
 
 function drawAll() {
     ctx.clearRect(0, 0, ele.width, ele.height);
-    plane.draw(ctx);
+    plane.onPaint(ctx);
     requestAnimationFrame(drawAll);
 }
 
