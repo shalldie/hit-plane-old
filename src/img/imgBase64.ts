@@ -9,6 +9,10 @@ let imgPlane: any = require("!url!./plane.png");
 
 let imgBoom: any = require("!url!./boom.png");
 
+let imgBullet: any = require("!url!./bullet.png");
+
 export {imgPlane};
 
 export {imgBoom};
+
+export {imgBullet};

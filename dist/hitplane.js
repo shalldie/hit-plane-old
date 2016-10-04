@@ -45,92 +45,30 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var Plane_1 = __webpack_require__(1);
-	var p = new Plane_1.default(1, 2, 3, 4);
-	var ele = document.createElement("canvas");
-	ele.style.cssText = "margin:50px auto;border:1px solid #2ad;display:block;";
-	document.body.appendChild(ele);
-	ele.width = 500;
-	ele.height = 300;
+	var Plane_1 = __webpack_require__(8);
+	var bg = document.getElementById("bg");
+	var ele = document.getElementById("demo");
+	ele.height = document.body.clientHeight * 2;
+	ele.width = ele.height * 512 / 768;
+	ele.style.cssText = "transform:translate3d(-50%,-50%,0) scale(.5)";
+	bg.style.width = ele.width / 2 + "px";
+	bg.style.height = ele.height + "px";
 	var ctx = ele.getContext("2d");
-	p.draw(ctx);
+	var plane = new Plane_1.default(200, 200, 172, 200);
+	function drawAll() {
+	    ctx.clearRect(0, 0, ele.width, ele.height);
+	    plane.onPaint(ctx);
+	    requestAnimationFrame(drawAll);
+	}
+	drawAll();
+	ele.addEventListener('mousemove', function (ex) {
+	    plane.x = ex.offsetX;
+	    plane.y = ex.offsetY;
+	});
 
 
 /***/ },
-/* 1 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var imgBase64_1 = __webpack_require__(2);
-	var Shape_1 = __webpack_require__(5);
-	var img = new Image();
-	img.src = imgBase64_1.imgPlane;
-	/**
-	 * 飞机，打飞机~ 大哥哥这是什么？呀！好长！诶？！好滑哦(๑• . •๑)！阿呜～
-	 *
-	 * @export
-	 * @class Plane
-	 * @extends {Shape}
-	 */
-	var Plane = (function (_super) {
-	    __extends(Plane, _super);
-	    function Plane() {
-	        _super.apply(this, arguments);
-	        /**
-	         * 原图中每张图片宽度
-	         *
-	         * @protected
-	         * @type {number}
-	         */
-	        this.baseWidth = 64;
-	        /**
-	         * 原图中图片数量
-	         *
-	         * @protected
-	         * @type {number}
-	         */
-	        this.baseWidthNum = 14;
-	        /**
-	         * 原图中图片高度
-	         *
-	         * @protected
-	         * @type {number}
-	         */
-	        this.baseHeight = 64;
-	        /**
-	         * 当前该显示的图片等索引
-	         *
-	         * @protected
-	         * @type {number}
-	         */
-	        this.index = 0;
-	        /**
-	         * 使用的图片，原图
-	         *
-	         * @protected
-	         * @type {HTMLImageElement}
-	         */
-	        this.img = img;
-	    }
-	    /**
-	     * 画出来,show yourself!
-	     *
-	     * @param {CanvasRenderingContext2D} ctx
-	     */
-	    Plane.prototype.draw = function (ctx) {
-	    };
-	    return Plane;
-	}(Shape_1.default));
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = Plane;
-
-
-/***/ },
+/* 1 */,
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -139,6 +77,8 @@
 	exports.imgPlane = imgPlane;
 	var imgBoom = __webpack_require__(4);
 	exports.imgBoom = imgBoom;
+	var imgBullet = __webpack_require__(5);
+	exports.imgBullet = imgBullet;
 
 
 /***/ },
@@ -157,7 +97,14 @@
 /* 5 */
 /***/ function(module, exports) {
 
+	module.exports = "data:image/png;base64,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"
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
 	"use strict";
+	var utils_1 = __webpack_require__(7); // 精灵渲染辅助方法
 	/**
 	 * 形状类，基类
 	 *
@@ -174,21 +121,130 @@
 	     */
 	    function Shape(x, y, width, height) {
 	        /**
-	         * 当前该显示的图片等索引
+	         * 是否 生存/可用
+	         *
+	         * @protected
+	         * @type {boolean}
+	         * @memberOf Shape
+	         */
+	        this.alive = true;
+	        /**
+	         * 创建时间
+	         *
+	         * @protected
+	         * @type {Date}
+	         * @memberOf Shape
+	         */
+	        this.createTime = new Date();
+	        /**
+	         * 图片是否是x轴展开
+	         *
+	         * @protected
+	         * @type {boolean}
+	         * @memberOf Shape
+	         */
+	        this.ifImgX = true;
+	        /**
+	         * 图片帧数量
 	         *
 	         * @protected
 	         * @type {number}
+	         * @memberOf Shape
 	         */
-	        this.index = 0;
+	        this.imgSum = 1;
 	        this.x = x;
 	        this.y = y;
 	        this.width = width;
 	        this.height = height;
 	    }
+	    /**
+	     * 画出来,show yourself!
+	     *
+	     * @param {CanvasRenderingContext2D} [ctx]
+	     *
+	     * @memberOf Shape
+	     */
+	    Shape.prototype.onPaint = function (ctx) {
+	        if (!this.alive)
+	            return;
+	        utils_1.imgSpirit(ctx, this.img, this.colourSpeed, this.createTime, this.ifImgX, this.imgSum, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
+	    };
 	    return Shape;
 	}());
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = Shape;
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
+
+	"use strict";
+	/**
+	 * 将雪碧图按照指定速度，画在画布的指定区域
+	 *
+	 * @export void
+	 * @param {CanvasRenderingContext2D} ctx 画布
+	 * @param {HTMLImageElement} img 图片
+	 * @param {number} speed 渲染速度
+	 * @param {Date} baseTime 创建时间
+	 * @param {boolean} ifX 是否是横向的雪碧图
+	 * @param {number} sum 图片帧数
+	 * @param {number} tX 画在画布上的x坐标
+	 * @param {number} tY 画在画布上的y坐标
+	 * @param {number} tW 图片在画布上的宽度
+	 * @param {number} tH 图片在画布上的高度
+	 * @param {onceCallback} onceCallback 当轮回之后进行的回调
+	 */
+	function imgSpirit(ctx, img, speed, baseTime, ifX, sum, tX, tY, tW, tH, onceCallback) {
+	    var diffTime = +new Date - +baseTime; // 当前时间与创建时间的时间差
+	    diffTime = diffTime % (speed * sum);
+	    var nowIndex = ~~(diffTime / speed); // 当前要画的第几帧
+	    var fX = ifX ? (nowIndex * img.width / sum) : 0;
+	    var fY = ifX ? 0 : (nowIndex * img.height / sum);
+	    var fW = ifX ? (img.width / sum) : img.width;
+	    var fH = ifX ? img.height : (img.height / sum);
+	    ctx.drawImage(img, ~~fX, ~~fY, ~~fW, ~~fH, tX, tY, tW, tH);
+	    if (nowIndex + 1 >= sum) {
+	        onceCallback && onceCallback();
+	    }
+	}
+	exports.imgSpirit = imgSpirit;
+
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var imgBase64_1 = __webpack_require__(2);
+	var Shape_1 = __webpack_require__(6);
+	var img = new Image();
+	img.src = imgBase64_1.imgPlane;
+	/**
+	 * 飞机，打飞机~ 大哥哥这是什么？呀！好长！诶？！好滑哦(๑• . •๑)！阿呜～
+	 *
+	 * @export
+	 * @class Plane
+	 * @extends {Shape}
+	 */
+	var Plane = (function (_super) {
+	    __extends(Plane, _super);
+	    function Plane(x, y, width, height) {
+	        _super.call(this, x, y, width, height);
+	        this.img = img;
+	        this.imgSum = 11;
+	        this.colourSpeed = 50;
+	    }
+	    return Plane;
+	}(Shape_1.default));
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = Plane;
 
 
 /***/ }

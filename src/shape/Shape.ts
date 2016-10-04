@@ -1,41 +1,19 @@
+import {imgSpirit} from '../utils/utils';  // 精灵渲染辅助方法
+
 /**
  * 形状类，基类
  * 
  * @class Shape
  */
 abstract class Shape {
-
     /**
-     * 原图中每张图片宽度
+     * 是否 生存/可用
      * 
      * @protected
-     * @type {number}
+     * @type {boolean}
+     * @memberOf Shape
      */
-    protected baseWidth: number;
-
-    /**
-     * 原图中图片数量
-     * 
-     * @protected
-     * @type {number}
-     */
-    protected baseWidthNum: number;
-
-    /**
-     * 原图中图片高度
-     * 
-     * @protected
-     * @type {number}
-     */
-    protected baseHeight: number;
-
-    /**
-     * 当前该显示的图片等索引
-     * 
-     * @protected
-     * @type {number}
-     */
-    protected index: number = 0;
+    protected alive: boolean = true;
 
     /**
      * 使用的图片，原图 
@@ -44,6 +22,42 @@ abstract class Shape {
      * @type {HTMLImageElement}
      */
     protected img: HTMLImageElement;
+
+    /**
+     * 创建时间
+     * 
+     * @protected
+     * @type {Date}
+     * @memberOf Shape
+     */
+    protected createTime: Date = new Date();
+
+    /**
+     * 渲染速度
+     * 
+     * @protected
+     * @type {number}
+     * @memberOf Shape
+     */
+    protected colourSpeed: number;
+
+    /**
+     * 图片是否是x轴展开
+     * 
+     * @protected
+     * @type {boolean}
+     * @memberOf Shape
+     */
+    protected ifImgX: boolean = true;
+
+    /**
+     * 图片帧数量
+     * 
+     * @protected
+     * @type {number}
+     * @memberOf Shape
+     */
+    protected imgSum: number = 1;
 
     /**
      * x 坐标
@@ -73,6 +87,7 @@ abstract class Shape {
      */
     public height: number;
 
+
     /**
      * Creates an instance of Shape.
      * 
@@ -88,14 +103,17 @@ abstract class Shape {
         this.height = height;
     }
 
-
     /**
      * 画出来,show yourself!
      * 
-     * @abstract
      * @param {CanvasRenderingContext2D} [ctx]
+     * 
+     * @memberOf Shape
      */
-    public abstract draw(ctx?: CanvasRenderingContext2D): void;
+    public onPaint(ctx: CanvasRenderingContext2D): void {
+        if (!this.alive) return;
+        imgSpirit(ctx, this.img, this.colourSpeed, this.createTime, this.ifImgX, this.imgSum, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
+    }
 
 
 }
