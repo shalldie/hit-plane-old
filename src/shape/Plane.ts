@@ -1,5 +1,6 @@
 import {imgPlane} from './../img/imgBase64';
 import Shape from './Shape';
+import {imgSpirit} from '../utils/utils';
 
 let img = new Image();
 img.src = imgPlane;
@@ -13,53 +14,11 @@ img.src = imgPlane;
  */
 export default class Plane extends Shape {
 
-    /**
-     * 原图中每张图片宽度
-     * 
-     * @protected
-     * @type {number}
-     */
-    protected baseWidth: number = 64;
-
-    /**
-     * 原图中图片数量
-     * 
-     * @protected
-     * @type {number}
-     */
-    protected baseWidthNum: number = 14;
-
-    /**
-     * 原图中图片高度
-     * 
-     * @protected
-     * @type {number}
-     */
-    protected baseHeight: number = 64;
-
-    /**
-     * 当前该显示的图片等索引
-     * 
-     * @protected
-     * @type {number}
-     */
-    protected index: number = 0;
-
-    /**
-     * 使用的图片，原图 
-     * 
-     * @protected
-     * @type {HTMLImageElement}
-     */
-    protected img: HTMLImageElement = img;
-
-    /**
-     * 画出来,show yourself!
-     * 
-     * @param {CanvasRenderingContext2D} ctx
-     */
-    public draw(ctx: CanvasRenderingContext2D) {
-
+    constructor(x: number, y: number, width: number, height: number) {
+        super(x, y, width, height);
+        this.img = img;
+        this.imgSum = 11;
+        this.colourSpeed = 50;
     }
-
+    
 }
