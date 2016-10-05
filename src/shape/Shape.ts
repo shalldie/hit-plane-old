@@ -9,11 +9,11 @@ abstract class Shape {
     /**
      * 是否 生存/可用
      * 
-     * @protected
+     * @public
      * @type {boolean}
      * @memberOf Shape
      */
-    protected alive: boolean = true;
+    public alive: boolean = true;
 
     /**
      * 使用的图片，原图 

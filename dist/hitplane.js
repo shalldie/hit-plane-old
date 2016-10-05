@@ -79,6 +79,8 @@
 	exports.imgBoom = imgBoom;
 	var imgBullet = __webpack_require__(5);
 	exports.imgBullet = imgBullet;
+	var imgHP = __webpack_require__(9);
+	exports.imgHP = imgHP;
 
 
 /***/ },
@@ -123,7 +125,7 @@
 	        /**
 	         * 是否 生存/可用
 	         *
-	         * @protected
+	         * @public
 	         * @type {boolean}
 	         * @memberOf Shape
 	         */
@@ -224,6 +226,8 @@
 	};
 	var imgBase64_1 = __webpack_require__(2);
 	var Shape_1 = __webpack_require__(6);
+	var utils_1 = __webpack_require__(7);
+	var Bullet_1 = __webpack_require__(10);
 	var img = new Image();
 	img.src = imgBase64_1.imgPlane;
 	/**
@@ -237,14 +241,94 @@
 	    __extends(Plane, _super);
 	    function Plane(x, y, width, height) {
 	        _super.call(this, x, y, width, height);
+	        this.fireSpan = 60;
+	        this.lastFireTime = new Date();
+	        this.bullets = [];
 	        this.img = img;
 	        this.imgSum = 11;
 	        this.colourSpeed = 50;
 	    }
+	    Plane.prototype.fire = function () {
+	        var bullet = new Bullet_1.Bullet(this.x, this.y - this.height / 2, 96, 96);
+	        this.bullets.push(bullet);
+	    };
+	    Plane.prototype.drawBullets = function (ctx) {
+	        this.bullets = this.bullets.filter(function (n) { return n.alive; });
+	        this.bullets.forEach(function (n) {
+	            if (n.y < -n.height / 2) {
+	                n.alive = false;
+	            }
+	            else {
+	                n.onPaint(ctx);
+	            }
+	        });
+	    };
+	    Plane.prototype.onPaint = function (ctx) {
+	        if (!this.alive)
+	            return;
+	        utils_1.imgSpirit(ctx, this.img, this.colourSpeed, this.createTime, this.ifImgX, this.imgSum, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
+	        if (+new Date - this.lastFireTime.getTime() >= this.fireSpan) {
+	            this.fire();
+	            this.lastFireTime = new Date();
+	        }
+	        this.drawBullets(ctx);
+	    };
 	    return Plane;
 	}(Shape_1.default));
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = Plane;
+
+
+/***/ },
+/* 9 */
+/***/ function(module, exports) {
+
+	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPsAAAAJCAYAAAD0KFq0AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDoyOTVFQUQ3OTgyM0YxMUU2ODY1QzlEQTA3M0NGQTBGNCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDoyOTVFQUQ3QTgyM0YxMUU2ODY1QzlEQTA3M0NGQTBGNCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjI5NUVBRDc3ODIzRjExRTY4NjVDOURBMDczQ0ZBMEY0IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjI5NUVBRDc4ODIzRjExRTY4NjVDOURBMDczQ0ZBMEY0Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+WfLlAAAAAS1JREFUeNrsmcEJwjAUhpOiB0EQBE8O4BJeHcAedQAHcAsn8SCKNwfw5EkQHMAZhB7Uxr81Qg1pLVYPPv4Pfl76m6ZN7MNno5XFhKqFMIDa1tJQw8YrdIFiJQ9d0NaOr50+Zfvpgmsqz/m+PmXH+hXmzXGe5/q+tuuZkucazzh5vkQCqA7V7BwjZ657vVS7lwcFid5HmENdRQiRxAoaI+mjAIme/JKvmeiEiGQIzZ5lwDBTuhNC5DF6JnuHa0GIaNqo4BtJsh+4FoSI5pT+Z0djA225HoSIZZqW8cj4G2KoHm/tCCFyOEMT5PgiOXjZo0Vd30ToZay6jbGVEb44vn3usvvdVTz94T1WmV8eVb9jU2G8d3v3psD75n380/MaWCVcMp9FSPJjtvNdgAEAevREBYlXVKkAAAAASUVORK5CYII="
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var Shape_1 = __webpack_require__(6);
+	var imgBase64_1 = __webpack_require__(2);
+	var img = new Image();
+	img.src = imgBase64_1.imgBullet;
+	/**
+	 * 子弹
+	 *
+	 * @export
+	 * @class Bullet
+	 * @extends {Shape}
+	 */
+	var Bullet = (function (_super) {
+	    __extends(Bullet, _super);
+	    function Bullet(x, y, width, height) {
+	        _super.call(this, x, y, width, height);
+	        /**
+	         * 子弹飞行速度，每多少毫秒移动一个单位长度
+	         *
+	         * @protected
+	         * @type {number}
+	         * @memberOf Bullet
+	         */
+	        this.speedSpan = 1;
+	        this.img = img;
+	        this.baseY = y;
+	    }
+	    Bullet.prototype.onPaint = function (ctx) {
+	        var timeSpan = new Date().getTime() - this.createTime.getTime();
+	        this.y = this.baseY - ~~(timeSpan / this.speedSpan);
+	        ctx.drawImage(this.img, 0, 0, this.img.width, this.img.height, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
+	    };
+	    return Bullet;
+	}(Shape_1.default));
+	exports.Bullet = Bullet;
 
 
 /***/ }
