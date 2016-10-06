@@ -1,11 +1,8 @@
 import Shape from './Shape';
 
-import {imgBullet} from '../img/imgBase64';
+import {imgBulletArr} from '../img/imgBase64';
 
 import {imgSpirit} from '../utils/utils';  // 精灵渲染辅助方法
-
-let img = new Image();
-img.src = imgBullet;
 
 /**
  * 子弹
@@ -16,10 +13,12 @@ img.src = imgBullet;
  */
 export class Bullet extends Shape {
 
-    constructor(x: number, y: number, width: number, height: number) {
+    constructor(x: number, y: number, width: number, height: number, typeIndex: number = 0) {
         super(x, y, width, height);
-        this.img = img;
+        this.img = new Image();
+        this.img.src = imgBulletArr[typeIndex];
         this.baseY = y;
+        this.speedSpan += 0.1 * typeIndex;
     }
 
     /**
@@ -29,7 +28,7 @@ export class Bullet extends Shape {
      * @type {number}
      * @memberOf Bullet
      */
-    protected speedSpan: number = 0.5;
+    protected speedSpan: number = 0.4;
 
     protected baseY: number;
 

@@ -27,8 +27,19 @@ export default class Plane extends Shape {
     }
 
     private fire(): void {
-        let bullet = new Bullet(this.x, this.y - this.height / 2, 96, 96);
-        this.bullets.push(bullet);
+        this.fireType(0, false);
+        this.fireType(1, true);
+        this.fireType(2, true);
+    }
+
+    private fireType(typeIndex: number, double: boolean = false) {
+        let offsetArr = [8, 25, 50]; // 偏移量
+        if (double) {
+            this.bullets.push(new Bullet(this.x + offsetArr[typeIndex], this.y - this.height / 2, 96, 96, typeIndex));
+            this.bullets.push(new Bullet(this.x - offsetArr[typeIndex], this.y - this.height / 2, 96, 96, typeIndex));
+        } else {
+            this.bullets.push(new Bullet(this.x, this.y - this.height / 2, 96, 96, typeIndex));
+        }
     }
 
     private drawBullets(ctx: CanvasRenderingContext2D): void {

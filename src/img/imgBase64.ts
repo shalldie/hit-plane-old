@@ -9,7 +9,11 @@ let imgPlane: any = require("!url!./plane.png");
 
 let imgBoom: any = require("!url!./boom.png");
 
-let imgBullet: any = require("!url!./bullet.png");
+let imgBulletArr: any[] = [
+    require("!url!./bullet01.png"),
+    require("!url!./bullet02.png"),
+    require("!url!./bullet03.png")
+]
 
 let imgHP: any = require("!url!./hp.png");
 
@@ -17,6 +21,6 @@ export {imgPlane};
 
 export {imgBoom};
 
-export {imgBullet};
+export {imgBulletArr};
 
 export {imgHP};
