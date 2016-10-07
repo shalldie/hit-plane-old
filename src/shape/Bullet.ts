@@ -18,7 +18,7 @@ export class Bullet extends Shape {
         this.img = new Image();
         this.img.src = imgBulletArr[typeIndex];
         this.baseY = y;
-        this.speedSpan += 0.1 * typeIndex;
+        this.speedSpan += 0.05 * typeIndex;
     }
 
     /**
