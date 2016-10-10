@@ -19,7 +19,9 @@ let imgEnemyArr: any[] = [ // 敌军图片数组
 
 ];
 
-let imgHP: any = require("!url!./hp.png");
+let imgHP: any = require("!url!./hp.png"); // HP 图片
+
+let imgEnemy: any = require("!url!./enemy.png"); // 敌军飞机图片
 
 export {imgPlane};
 
@@ -30,3 +32,5 @@ export {imgBulletArr};
 export {imgHP};
 
 export {imgEnemyArr};
+
+export {imgEnemy};

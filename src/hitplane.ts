@@ -2,6 +2,8 @@ import Boom from './Shape/Boom';
 
 import Plane from './Shape/Plane';
 
+import Enemy from './Shape/Enemy';
+
 let bg = <HTMLDivElement>document.getElementById("bg");
 let ele = <HTMLCanvasElement>document.getElementById("demo");
 
@@ -17,9 +19,12 @@ let ctx = ele.getContext("2d");
 
 var plane = new Plane(200, 200, 172, 200);
 
+let enemy = new Enemy(300, 300, 120, 3, 100);
+
 function drawAll() {
     ctx.clearRect(0, 0, ele.width, ele.height);
     plane.onPaint(ctx);
+    enemy.onPaint(ctx);
     requestAnimationFrame(drawAll);
 }
 
