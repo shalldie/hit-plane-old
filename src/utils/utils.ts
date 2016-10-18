@@ -14,7 +14,18 @@
  * @param {number} tH 图片在画布上的高度
  * @param {onceCallback} onceCallback 当轮回之后进行的回调
  */
-export function imgSpirit(ctx: CanvasRenderingContext2D, img: HTMLImageElement, speed: number, baseTime: Date, ifX: boolean, sum: number, tX: number, tY: number, tW: number, tH: number, onceCallback?: Function): void {
+export function imgSpirit(
+    ctx: CanvasRenderingContext2D,
+    img: HTMLImageElement,
+    speed: number,
+    baseTime: Date,
+    ifX: boolean,
+    sum: number,
+    tX: number,
+    tY: number,
+    tW: number,
+    tH: number,
+    onceCallback?: Function): void {
 
     if (sum <= 1) {  // 如果是单帧图片
         imgDrawSingle(ctx, img, 0, 0, img.width, img.height, tX, tY, tW, tH);
@@ -54,8 +65,18 @@ export function imgSpirit(ctx: CanvasRenderingContext2D, img: HTMLImageElement, 
  * @param {number} [tW=img.width] 图片在画布上的宽度
  * @param {number} [tH=img.height] 图片在画布上的高度
  */
-export function imgDrawSingle(ctx: CanvasRenderingContext2D, img: HTMLImageElement, fX: number = 0, fY: number = 0, fW: number = img.width, fH: number = img.height, tX: number = 0, tY: number = 0, tW: number = img.width, tH: number = img.height) {
+export function imgDrawSingle(
+    ctx: CanvasRenderingContext2D,
+    img: HTMLImageElement,
+    fX: number = 0,
+    fY: number = 0,
+    fW: number = img.width,
+    fH: number = img.height,
+    tX: number = 0,
+    tY: number = 0,
+    tW: number = img.width,
+    tH: number = img.height): void {
 
-    ctx.drawImage(img, fX, fY, fW, fH, tW, tY, tW, tH);
+    ctx.drawImage(img, fX, fY, fW, fH, tX, tY, tW, tH);
 
 }

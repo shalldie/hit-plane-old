@@ -34,3 +34,7 @@ ele.addEventListener('mousemove', function (ex) {
     plane.x = ex.offsetX;
     plane.y = ex.offsetY;
 });
+
+setInterval(function () {
+    enemy.fire();
+}, 1000);

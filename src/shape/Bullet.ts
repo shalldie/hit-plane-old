@@ -42,12 +42,13 @@ export class Bullet extends Shape {
 export class EnemyBullet extends Bullet {
     constructor(x: number, y: number, width: number) {
         super(x, y, width, width, 3);
-        this.speedSpan = 0.07;
+        this.speedSpan = 2;
     }
 
     public onPaint(ctx: CanvasRenderingContext2D): void {
         let timeSpan = new Date().getTime() - this.createTime.getTime();
         this.y = this.baseY + ~~(timeSpan / this.speedSpan);
-        ctx.drawImage(this.img, 0, 0, this.img.width, this.img.height, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
+        // ctx.drawImage(this.img, 0, 0, this.img.width, this.img.height, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
+        imgSpirit(ctx, this.img, 300, this.createTime, true, 3, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
     }
 }

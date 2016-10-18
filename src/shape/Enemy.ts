@@ -74,7 +74,7 @@ export default class Enemy extends Shape {
     }
 
     public fire() {
-        let bullet: EnemyBullet = new EnemyBullet(this.x, this.y + this.height / 2, this.width / 5);
+        let bullet: EnemyBullet = new EnemyBullet(this.x, this.y + this.height / 2 + 2, this.width / 2);
         this.bullets.push(bullet);
     }
 
@@ -88,6 +88,8 @@ export default class Enemy extends Shape {
     public onPaint(ctx: CanvasRenderingContext2D): void {
         // 血条
         imgDrawSingle(ctx, imghp, 0, 0, imghp.width, imghp.height, this.x - this.width / 2, this.y - this.height / 2 - 20, this.width * this.HP / this.maxHP, 10);
+
+        // imgDrawSingle(ctx,imghp)
         // 自身
         imgDrawSingle(ctx, this.img, this.area.x, this.area.y, this.area.w, this.area.h, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
         // 子弹
@@ -97,11 +99,12 @@ export default class Enemy extends Shape {
             if (bullet.alive) {
                 bullet.onPaint(ctx);
             } else {
+                this.bullets[i] = null; // 听说等于null，有益于释放资源
                 allAlive = false;
             }
         }
         if (!allAlive) {
-            this.bullets = this.bullets.filter(n => n.alive);
+            this.bullets = this.bullets.filter(n => n != null && n.alive);
         }
     }
 
