@@ -4,6 +4,8 @@ import {imgDrawSingle} from '../utils/utils';
 
 import {imgEnemy, imgHP} from '../img/imgBase64';
 
+import {EnemyBullet} from './Bullet'
+
 let img = new Image();
 img.src = imgEnemy;
 
@@ -49,6 +51,16 @@ export default class Enemy extends Shape {
     private maxHP: number;
     public HP: number;
 
+    /**
+     * 子弹数组
+     * 
+     * @type {EnemyBullet[]}
+     * @memberOf Enemy
+     */
+    public bullets: EnemyBullet[];
+
+    // public 
+
     constructor(x: number, y: number, width: number, typeIndex: number, hp: number) {
         var area = areaArr[typeIndex];
         let height: number = width * area.h / area.w;
@@ -57,8 +69,14 @@ export default class Enemy extends Shape {
         this.img = img;
         this.HP = hp;
         this.maxHP = hp;
+
+        this.bullets = [];
     }
 
+    public fire() {
+        let bullet: EnemyBullet = new EnemyBullet(this.x, this.y + this.height / 2, this.width / 5);
+        this.bullets.push(bullet);
+    }
 
     /**
      * 绘制自身
@@ -72,6 +90,19 @@ export default class Enemy extends Shape {
         imgDrawSingle(ctx, imghp, 0, 0, imghp.width, imghp.height, this.x - this.width / 2, this.y - this.height / 2 - 20, this.width * this.HP / this.maxHP, 10);
         // 自身
         imgDrawSingle(ctx, this.img, this.area.x, this.area.y, this.area.w, this.area.h, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
+        // 子弹
+        let allAlive = true; // 标记，节省开销
+        for (let i = 0, len = this.bullets.length; i < len; i++) {
+            let bullet = this.bullets[i];
+            if (bullet.alive) {
+                bullet.onPaint(ctx);
+            } else {
+                allAlive = false;
+            }
+        }
+        if (!allAlive) {
+            this.bullets = this.bullets.filter(n => n.alive);
+        }
     }
 
 }

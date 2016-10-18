@@ -12,7 +12,8 @@ let imgBoom: any = require("!url!./boom.png");
 let imgBulletArr: any[] = [  // 子弹数组
     require("!url!./bullet01.png"), // 基础子弹
     require("!url!./bullet02.png"), // 二级子弹
-    require("!url!./bullet03.png")  // 三级子弹
+    require("!url!./bullet03.png"),  // 三级子弹
+    require("!url!./enemy_bullet.png")  // 敌军子弹
 ];
 
 let imgEnemyArr: any[] = [ // 敌军图片数组
