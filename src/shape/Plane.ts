@@ -24,6 +24,7 @@ export default class Plane extends Shape {
         this.img = img;
         this.imgSum = 11;
         this.colourSpeed = 50;
+        this.realWidth = width * 0.8;
     }
 
     private fire(): void {
@@ -44,14 +45,9 @@ export default class Plane extends Shape {
 
     private drawBullets(ctx: CanvasRenderingContext2D): void {
         this.bullets = this.bullets.filter(n => n.alive);
-
-        this.bullets.forEach(n => {
-            if (n.y < -n.height / 2) {
-                n.alive = false;
-            } else {
-                n.onPaint(ctx);
-            }
-        });
+        for (let i = 0, len = this.bullets.length; i < len; i++) {
+            this.bullets[i].onPaint(ctx);
+        }
     }
 
     public onPaint(ctx: CanvasRenderingContext2D): void {

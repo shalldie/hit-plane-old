@@ -4,6 +4,8 @@ import Plane from './Shape/Plane';
 
 import Enemy from './Shape/Enemy';
 
+import config from './config';
+
 let bg = <HTMLDivElement>document.getElementById("bg");
 let ele = <HTMLCanvasElement>document.getElementById("demo");
 
@@ -16,6 +18,8 @@ bg.style.width = ele.width / 2 + "px";
 bg.style.height = ele.height + "px";
 
 let ctx = ele.getContext("2d");
+config.width = ele.width;
+config.height = ele.height;
 
 var plane = new Plane(200, 200, 172, 200);
 

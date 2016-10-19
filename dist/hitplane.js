@@ -46,7 +46,8 @@
 
 	"use strict";
 	var Plane_1 = __webpack_require__(1);
-	var Enemy_1 = __webpack_require__(14);
+	var Enemy_1 = __webpack_require__(15);
+	var config_1 = __webpack_require__(14);
 	var bg = document.getElementById("bg");
 	var ele = document.getElementById("demo");
 	ele.height = document.body.clientHeight * 2;
@@ -55,6 +56,8 @@
 	bg.style.width = ele.width / 2 + "px";
 	bg.style.height = ele.height + "px";
 	var ctx = ele.getContext("2d");
+	config_1.default.width = ele.width;
+	config_1.default.height = ele.height;
 	var plane = new Plane_1.default(200, 200, 172, 200);
 	var enemy = new Enemy_1.default(300, 300, 120, 3, 100);
 	function drawAll() {
@@ -106,6 +109,7 @@
 	        this.img = img;
 	        this.imgSum = 11;
 	        this.colourSpeed = 50;
+	        this.realWidth = width * 0.8;
 	    }
 	    Plane.prototype.fire = function () {
 	        this.fireType(0, false);
@@ -125,14 +129,9 @@
 	    };
 	    Plane.prototype.drawBullets = function (ctx) {
 	        this.bullets = this.bullets.filter(function (n) { return n.alive; });
-	        this.bullets.forEach(function (n) {
-	            if (n.y < -n.height / 2) {
-	                n.alive = false;
-	            }
-	            else {
-	                n.onPaint(ctx);
-	            }
-	        });
+	        for (var i = 0, len = this.bullets.length; i < len; i++) {
+	            this.bullets[i].onPaint(ctx);
+	        }
 	    };
 	    Plane.prototype.onPaint = function (ctx) {
 	        if (!this.alive)
@@ -279,6 +278,8 @@
 	        this.y = y;
 	        this.width = width;
 	        this.height = height;
+	        this.realWidth = width;
+	        this.realHeight = height;
 	    }
 	    /**
 	     * 画出来,show yourself!
@@ -365,6 +366,21 @@
 	    ctx.drawImage(img, fX, fY, fW, fH, tX, tY, tW, tH);
 	}
 	exports.imgDrawSingle = imgDrawSingle;
+	/**
+	 * 是否碰撞
+	 *
+	 * @export
+	 * @param {Shape} obj1
+	 * @param {Shape} obj2
+	 * @returns {boolean}
+	 */
+	function ifIntersect(obj1, obj2) {
+	    return !(obj1.x + obj1.realWidth / 2 < obj2.x + obj2.realWidth / 2 ||
+	        obj1.y + obj1.realHeight / 2 < obj2.y + obj2.realHeight / 2 ||
+	        obj2.x + obj2.realWidth / 2 < obj1.x + obj1.realWidth / 2 ||
+	        obj2.y + obj2.realHeight / 2 < obj1.y + obj1.realHeight / 2);
+	}
+	exports.ifIntersect = ifIntersect;
 
 
 /***/ },
@@ -380,6 +396,7 @@
 	var Shape_1 = __webpack_require__(11);
 	var imgBase64_1 = __webpack_require__(2);
 	var utils_1 = __webpack_require__(12); // 精灵渲染辅助方法
+	var config_1 = __webpack_require__(14);
 	/**
 	 * 子弹
 	 *
@@ -408,6 +425,12 @@
 	    Bullet.prototype.onPaint = function (ctx) {
 	        var timeSpan = new Date().getTime() - this.createTime.getTime();
 	        this.y = this.baseY - ~~(timeSpan / this.speedSpan);
+	        if (this.y < -this.height) {
+	            this.alive = false;
+	            // console.log(`${+new Date}`);
+	            // console.log(+new Date);
+	            return;
+	        }
 	        ctx.drawImage(this.img, 0, 0, this.img.width, this.img.height, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
 	    };
 	    return Bullet;
@@ -422,6 +445,11 @@
 	    EnemyBullet.prototype.onPaint = function (ctx) {
 	        var timeSpan = new Date().getTime() - this.createTime.getTime();
 	        this.y = this.baseY + ~~(timeSpan / this.speedSpan);
+	        if (this.y > config_1.default.height + this.height / 2) {
+	            this.alive = false;
+	            console.log('子弹失效...');
+	            return;
+	        }
 	        // ctx.drawImage(this.img, 0, 0, this.img.width, this.img.height, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
 	        utils_1.imgSpirit(ctx, this.img, 300, this.createTime, true, 3, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
 	    };
@@ -432,6 +460,21 @@
 
 /***/ },
 /* 14 */
+/***/ function(module, exports) {
+
+	"use strict";
+	var config = {
+	    width: 200,
+	    height: 200,
+	    ctx: null,
+	    "": ""
+	};
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = config;
+
+
+/***/ },
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -491,6 +534,12 @@
 	        this.maxHP = hp;
 	        this.bullets = [];
 	    }
+	    /**
+	     * 开火
+	     *
+	     *
+	     * @memberOf Enemy
+	     */
 	    Enemy.prototype.fire = function () {
 	        var bullet = new Bullet_1.EnemyBullet(this.x, this.y + this.height / 2 + 2, this.width / 2);
 	        this.bullets.push(bullet);

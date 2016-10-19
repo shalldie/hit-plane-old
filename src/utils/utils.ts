@@ -1,3 +1,5 @@
+import Shape from '../shape/Shape';
+
 /**
  * 将雪碧图按照指定速度，画在画布的指定区域
  * 
@@ -79,4 +81,21 @@ export function imgDrawSingle(
 
     ctx.drawImage(img, fX, fY, fW, fH, tX, tY, tW, tH);
 
+}
+
+/**
+ * 是否碰撞
+ * 
+ * @export
+ * @param {Shape} obj1
+ * @param {Shape} obj2
+ * @returns {boolean}
+ */
+export function ifIntersect(obj1: Shape, obj2: Shape): boolean {
+    return !(
+        obj1.x + obj1.realWidth / 2 < obj2.x + obj2.realWidth / 2 ||
+        obj1.y + obj1.realHeight / 2 < obj2.y + obj2.realHeight / 2 ||
+        obj2.x + obj2.realWidth / 2 < obj1.x + obj1.realWidth / 2 ||
+        obj2.y + obj2.realHeight / 2 < obj1.y + obj1.realHeight / 2
+    );
 }

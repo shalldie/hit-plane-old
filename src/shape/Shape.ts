@@ -87,6 +87,22 @@ abstract class Shape {
      */
     public height: number;
 
+    /**
+     * 用于碰撞检测的宽度
+     * 
+     * @type {number}
+     * @memberOf Shape
+     */
+    public realWidth: number;
+
+    /**
+     * 用于碰撞检测的高度
+     * 
+     * @type {number}
+     * @memberOf Shape
+     */
+    public realHeight: number;
+
 
     /**
      * Creates an instance of Shape.
@@ -101,6 +117,8 @@ abstract class Shape {
         this.y = y;
         this.width = width;
         this.height = height;
+        this.realWidth = width;
+        this.realHeight = height;
     }
 
     /**

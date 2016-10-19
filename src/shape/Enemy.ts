@@ -73,6 +73,12 @@ export default class Enemy extends Shape {
         this.bullets = [];
     }
 
+    /**
+     * 开火
+     * 
+     * 
+     * @memberOf Enemy
+     */
     public fire() {
         let bullet: EnemyBullet = new EnemyBullet(this.x, this.y + this.height / 2 + 2, this.width / 2);
         this.bullets.push(bullet);
