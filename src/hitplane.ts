@@ -1,10 +1,5 @@
-import Boom from './Shape/Boom';
-
-import Plane from './Shape/Plane';
-
-import Enemy from './Shape/Enemy';
-
-import config from './config';
+import Logic from './logic/Logic';
+// import config from './config';
 
 let bg = <HTMLDivElement>document.getElementById("bg");
 let ele = <HTMLCanvasElement>document.getElementById("demo");
@@ -18,27 +13,7 @@ bg.style.width = ele.width / 2 + "px";
 bg.style.height = ele.height + "px";
 
 let ctx = ele.getContext("2d");
-config.width = ele.width;
-config.height = ele.height;
 
-var plane = new Plane(200, 200, 172, 200);
+let logic = new Logic(ele.width, ele.height, ctx);
 
-let enemy = new Enemy(300, 300, 120, 3, 100);
-
-function drawAll() {
-    ctx.clearRect(0, 0, ele.width, ele.height);
-    plane.onPaint(ctx);
-    enemy.onPaint(ctx);
-    requestAnimationFrame(drawAll);
-}
-
-drawAll();
-
-ele.addEventListener('mousemove', function (ex) {
-    plane.x = ex.offsetX;
-    plane.y = ex.offsetY;
-});
-
-setInterval(function () {
-    enemy.fire();
-}, 1000);
+logic.start();

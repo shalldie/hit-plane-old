@@ -1,6 +1,6 @@
-import {imgBoom} from './../img/imgBase64';
+import { imgBoom } from './../img/imgBase64';
 import Shape from './Shape';
-import {imgSpirit} from './../utils/utils'
+import { imgSpirit } from './../utils/utils'
 
 let img = new Image();
 img.src = imgBoom;
@@ -22,7 +22,7 @@ export default class Boom extends Shape {
 
     public onPaint(ctx: CanvasRenderingContext2D): void {
         var self = this;
-        imgSpirit(ctx, this.img, this.colourSpeed, this.createTime, true, 14, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height, function () {
+        imgSpirit(ctx, this.img, this.colourSpeed, this.createTime, true, 14, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height, 1, function () {
             self.alive = false;
         });
     }

@@ -1,4 +1,4 @@
-import {imgSpirit} from '../utils/utils';  // 精灵渲染辅助方法
+import { imgSpirit } from '../utils/utils';  // 精灵渲染辅助方法
 
 /**
  * 形状类，基类
@@ -103,6 +103,25 @@ abstract class Shape {
      */
     public realHeight: number;
 
+    protected opacityTime: Date;
+
+    protected opacityLast: number;
+
+    protected opacity: number = 1;
+
+    /**
+     * 持续一段时间半透明
+     * 
+     * @param {number} opacity
+     * @param {number} last
+     * 
+     * @memberOf Shape
+     */
+    public makeOpacity(opacity: number, last: number): void {
+        this.opacity = opacity;
+        this.opacityTime = new Date();
+        this.opacityLast = last;
+    }
 
     /**
      * Creates an instance of Shape.
@@ -130,7 +149,12 @@ abstract class Shape {
      */
     public onPaint(ctx: CanvasRenderingContext2D): void {
         if (!this.alive) return;
-        imgSpirit(ctx, this.img, this.colourSpeed, this.createTime, this.ifImgX, this.imgSum, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
+        var opa = 1;
+        if (this.opacity != 1 && new Date().getTime() - this.opacityTime.getTime() < this.opacityLast) {
+            opa = this.opacity;
+        }
+        
+        imgSpirit(ctx, this.img, this.colourSpeed, this.createTime, this.ifImgX, this.imgSum, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height, opa);
     }
 
 

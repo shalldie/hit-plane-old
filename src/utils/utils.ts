@@ -14,6 +14,7 @@ import Shape from '../shape/Shape';
  * @param {number} tY 画在画布上的y坐标
  * @param {number} tW 图片在画布上的宽度
  * @param {number} tH 图片在画布上的高度
+ * @param {number} globalAlpha 透明度
  * @param {onceCallback} onceCallback 当轮回之后进行的回调
  */
 export function imgSpirit(
@@ -27,6 +28,7 @@ export function imgSpirit(
     tY: number,
     tW: number,
     tH: number,
+    globalAlpha: number = 1,
     onceCallback?: Function): void {
 
     if (sum <= 1) {  // 如果是单帧图片
@@ -44,7 +46,10 @@ export function imgSpirit(
     var fW = ifX ? (img.width / sum) : img.width;
     var fH = ifX ? img.height : (img.height / sum);
 
+    ctx.save();
+    ctx.globalAlpha = globalAlpha;
     ctx.drawImage(img, ~~fX, ~~fY, ~~fW, ~~fH, tX, tY, tW, tH);
+    ctx.restore();
 
     if (nowIndex + 1 >= sum) {  // 最后一帧绘制完毕进行回调
         onceCallback && onceCallback();
@@ -66,6 +71,7 @@ export function imgSpirit(
  * @param {number} [tY=0] 画在画布上的y轴坐标
  * @param {number} [tW=img.width] 图片在画布上的宽度
  * @param {number} [tH=img.height] 图片在画布上的高度
+ * @param {number} [globalAlpha=1] 透明度
  */
 export function imgDrawSingle(
     ctx: CanvasRenderingContext2D,
@@ -77,9 +83,16 @@ export function imgDrawSingle(
     tX: number = 0,
     tY: number = 0,
     tW: number = img.width,
-    tH: number = img.height): void {
-
-    ctx.drawImage(img, fX, fY, fW, fH, tX, tY, tW, tH);
+    tH: number = img.height,
+    globalAlpha: number = 1): void {
+    if (globalAlpha != 1) {
+        ctx.drawImage(img, fX, fY, fW, fH, tX, tY, tW, tH);
+    } else {
+        ctx.save();
+        ctx.globalAlpha = globalAlpha;
+        ctx.drawImage(img, fX, fY, fW, fH, tX, tY, tW, tH);
+        ctx.restore();
+    }
 
 }
 
@@ -98,4 +111,17 @@ export function ifIntersect(obj1: Shape, obj2: Shape): boolean {
         obj2.x + obj2.realWidth / 2 < obj1.x + obj1.realWidth / 2 ||
         obj2.y + obj2.realHeight / 2 < obj1.y + obj1.realHeight / 2
     );
+}
+
+/**
+ * 
+ * 
+ * @export
+ * @param {any} callback
+ */
+export function makeRequestAnimationFrame(callback) {
+    callback();
+    requestAnimationFrame(function () {
+        makeRequestAnimationFrame(callback);
+    });
 }
