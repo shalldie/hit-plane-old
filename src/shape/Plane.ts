@@ -15,7 +15,7 @@ img.src = imgPlane;
  */
 export default class Plane extends Shape {
 
-    protected fireSpan: number = 60;
+    protected fireSpan: number = 120;
     protected lastFireTime: Date = new Date();
 
     constructor(x: number, y: number, width: number, height: number) {
@@ -26,23 +26,30 @@ export default class Plane extends Shape {
         this.realWidth = width * 0.8;
     }
 
-    private fire(option: [number, boolean][]): Bullet[] {
+    public fire(option: [number, boolean][], scale: number): Bullet[] {
+        // 发射间隔
+        if (+new Date - this.lastFireTime.getTime() < this.fireSpan) {
+            return [];
+        }
+
+        this.lastFireTime = new Date();
+
         let arr: Bullet[] = [];
         let i = 0, len = option.length;
         for (; i < len; i++) {
-            arr = arr.concat(this.fireType(option[i][0], option[i][1]));
+            arr = arr.concat(this.fireType(option[i][0], option[i][1], scale));
         }
         return arr;
     }
 
-    private fireType(typeIndex: number, double: boolean = false): Bullet[] {
-        let offsetArr = [8, 25, 50]; // 偏移量
+    private fireType(typeIndex: number, double: boolean = false, scale: number): Bullet[] {
+        let offsetArr = [8 * scale, 25 * scale, 50 * scale]; // 偏移量
         let arr: Bullet[] = [];
         if (double) {
-            arr.push(new Bullet(this.x + offsetArr[typeIndex], this.y - this.height / 2, 96, 96, typeIndex));
-            arr.push(new Bullet(this.x - offsetArr[typeIndex], this.y - this.height / 2, 96, 96, typeIndex));
+            arr.push(new Bullet(this.x + offsetArr[typeIndex], this.y - this.height / 2, 96 * scale, 96 * scale, typeIndex, scale));
+            arr.push(new Bullet(this.x - offsetArr[typeIndex], this.y - this.height / 2, 96 * scale, 96 * scale, typeIndex, scale));
         } else {
-            arr.push(new Bullet(this.x, this.y - this.height / 2, 96, 96, typeIndex));
+            arr.push(new Bullet(this.x, this.y - this.height / 2, 96 * scale, 96 * scale, typeIndex, scale));
         }
         return arr;
     }
@@ -63,10 +70,7 @@ export default class Plane extends Shape {
         }
 
         imgSpirit(ctx, this.img, this.colourSpeed, this.createTime, this.ifImgX, this.imgSum, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height, opa);
-        if (+new Date - this.lastFireTime.getTime() >= this.fireSpan) {
-            // this.fire();
-            this.lastFireTime = new Date();
-        }
+
         // this.drawBullets(ctx);
     }
 

@@ -66,13 +66,13 @@ export default class Enemy extends Shape {
     /**
      * 开火
      * 
-     * @param {EnemyBullet} [bullet]
+     * @param {number} [scale=1]
      * @returns {EnemyBullet[]}
      * 
      * @memberOf Enemy
      */
-    public fire(bullet?: EnemyBullet): EnemyBullet[] {
-        return [new EnemyBullet(this.x, this.y + this.height / 2 + 2, this.width / 2)];
+    public fire(scale: number = 1): EnemyBullet[] {
+        return [new EnemyBullet(this.x, this.y + this.height / 2 + 2, this.width / 2, scale)];
     }
 
     /**

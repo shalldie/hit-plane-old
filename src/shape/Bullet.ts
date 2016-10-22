@@ -15,12 +15,13 @@ import { imgSpirit } from '../utils/utils';  // 精灵渲染辅助方法
  */
 export class Bullet extends Shape {
 
-    constructor(x: number, y: number, width: number, height: number, typeIndex: number = 0) {
+    constructor(x: number, y: number, width: number, height: number, typeIndex: number = 0, scale: number = 1) {
         super(x, y, width, height);
         this.img = new Image();
         this.img.src = imgBulletArr[typeIndex];
         this.baseY = y;
-        this.speedSpan += 0.05 * typeIndex;
+        this.speedSpan /= scale;
+        this.speedSpan += 0.12 * typeIndex;
     }
 
     public ATK: number = 0;
@@ -52,9 +53,9 @@ export class Bullet extends Shape {
 }
 
 export class EnemyBullet extends Bullet {
-    constructor(x: number, y: number, width: number) {
+    constructor(x: number, y: number, width: number, scale: number = 1) {
         super(x, y, width, width, 3);
-        this.speedSpan = 2;
+        this.speedSpan = 2 / scale;
     }
 
     public onPaint(ctx: CanvasRenderingContext2D): void {

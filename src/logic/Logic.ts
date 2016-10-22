@@ -49,19 +49,56 @@ export default class Logic {
 
     private height: number;
 
+    private scale: number = 1;
+
 
     constructor(width: number, height: number, ctx: CanvasRenderingContext2D) {
         this.width = width;
         this.height = height;
         this.ctx = ctx;
+        this.scale = this.height / 1200; // 等比缩放，保证在不同分辨率下比例一致，类似rem的效果
     }
 
     public start(): void {
-
+        this.newPlane();
+        this.keepRefresh();
     }
 
+    /**
+     * 出现新飞机
+     * 
+     * @private
+     * 
+     * @memberOf Logic
+     */
     private newPlane(): void {
+        this.plane = new Plane(this.width / 2, 0, 172 * this.scale, 200 * this.scale);
+        this.plane.y = this.height - this.plane.height;
+        this.plane.makeOpacity(0.5, 3000);
+    }
 
+    /**
+     * 开始帧动画
+     * 
+     * @private
+     * 
+     * @memberOf Logic
+     */
+    private keepRefresh() {
+        let self = this;
+        utils.makeRequestAnimationFrame(function () {
+            var arr = self.plane.fire([
+                [0, false],
+                [1, true],
+                [2, true]
+            ], self.scale);
+            if (arr.length) {
+                self.bulletList = self.bulletList.concat(arr);
+            }
+
+            self.checkIntersect(); // 碰撞检测
+            self.onPaint();  // 绘制
+        });
     }
 
     private checkIntersect(): void {
@@ -96,6 +133,7 @@ export default class Logic {
     }
 
     private onPaint(): void {
+        this.ctx.clearRect(0, 0, this.width, this.height);
 
         let i = 0, len = 0;
         let bullet: Bullet;
