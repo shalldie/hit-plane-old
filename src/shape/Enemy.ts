@@ -61,6 +61,7 @@ export default class Enemy extends Shape {
         this.img = img;
         this.HP = hp;
         this.maxHP = hp;
+        this.realWidth = width * 0.8;
     }
 
     /**
@@ -89,7 +90,7 @@ export default class Enemy extends Shape {
         }
 
         // 血条
-        imgDrawSingle(ctx, imghp, 0, 0, imghp.width, imghp.height, this.x - this.width / 2, this.y - this.height / 2 - 20, this.width * this.HP / this.maxHP, 10, opa);
+        imgDrawSingle(ctx, imghp, 0, 0, imghp.width, imghp.height, this.x - this.width / 2, this.y - this.height / 2 - 20, this.width * this.HP / this.maxHP, 10);
 
         // imgDrawSingle(ctx,imghp)
         // 自身

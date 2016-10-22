@@ -61,7 +61,13 @@ export default class Logic {
 
     public start(): void {
         this.newPlane();
+        this.newEnemy();
         this.keepRefresh();
+    }
+
+    public setPosition(x: number, y: number) {
+        this.plane.x = x;
+        this.plane.y = y;
     }
 
     /**
@@ -75,6 +81,26 @@ export default class Logic {
         this.plane = new Plane(this.width / 2, 0, 172 * this.scale, 200 * this.scale);
         this.plane.y = this.height - this.plane.height;
         this.plane.makeOpacity(0.5, 3000);
+    }
+
+    /**
+     * 新敌军
+     * 
+     * @private
+     * 
+     * @memberOf Logic
+     */
+    private newEnemy(): void {
+        let enemy: Enemy = new Enemy(this.width / 2, 100, 100 * this.scale, 1, 100);
+        this.enemyList.push(enemy);
+        window["enemy"] = enemy;
+        let self = this;
+        let timer = setInterval(function () {
+            self.enemyBulletList = self.enemyBulletList.concat(enemy.fire(self.scale));
+            if (!enemy.alive) {
+                clearInterval(timer);
+            }
+        }, 500);
     }
 
     /**
@@ -114,6 +140,7 @@ export default class Logic {
                 if (enemy.alive && utils.ifIntersect(enemy, bullet)) {   // 如果子弹击中敌军
                     bullet.alive = false;
                     enemy.HP -= bullet.ATK; // 扣除生命值
+                    enemy.makeOpacity(0.5, 10);
                     if (enemy.HP <= 0) {  // 被打挂了
                         enemy.HP = 0;
                         enemy.alive = false;
@@ -122,6 +149,8 @@ export default class Logic {
             }
         }
 
+        this.bulletList = this.bulletList.filter(n => n.alive && n.y + n.height > 0);
+
         // 敌军子弹跟自己碰撞检测 
         for (i = 0, len = this.enemyBulletList.length; i < len; i++) {
             enemyBullet = this.enemyBulletList[i];
@@ -129,6 +158,8 @@ export default class Logic {
                 this.plane.alive = false;
             }
         }
+
+        this.enemyBulletList = this.enemyBulletList.filter(n => n.alive && n.y - n.height < this.height);
 
     }
 

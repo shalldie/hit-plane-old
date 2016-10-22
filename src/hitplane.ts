@@ -17,3 +17,7 @@ let ctx = ele.getContext("2d");
 let logic = new Logic(ele.width, ele.height, ctx);
 
 logic.start();
+
+ele.addEventListener('mousemove', function (ex) {
+    logic.setPosition(ex.offsetX, ex.offsetY);
+});

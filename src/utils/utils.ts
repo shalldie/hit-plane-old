@@ -85,7 +85,7 @@ export function imgDrawSingle(
     tW: number = img.width,
     tH: number = img.height,
     globalAlpha: number = 1): void {
-    if (globalAlpha != 1) {
+    if (globalAlpha == 1) {
         ctx.drawImage(img, fX, fY, fW, fH, tX, tY, tW, tH);
     } else {
         ctx.save();
@@ -106,10 +106,10 @@ export function imgDrawSingle(
  */
 export function ifIntersect(obj1: Shape, obj2: Shape): boolean {
     return !(
-        obj1.x + obj1.realWidth / 2 < obj2.x + obj2.realWidth / 2 ||
-        obj1.y + obj1.realHeight / 2 < obj2.y + obj2.realHeight / 2 ||
-        obj2.x + obj2.realWidth / 2 < obj1.x + obj1.realWidth / 2 ||
-        obj2.y + obj2.realHeight / 2 < obj1.y + obj1.realHeight / 2
+        obj1.x + obj1.realWidth / 2 < obj2.x - obj2.realWidth / 2 ||
+        obj1.y + obj1.realHeight / 2 < obj2.y - obj2.realHeight / 2 ||
+        obj2.x + obj2.realWidth / 2 < obj1.x - obj1.realWidth / 2 ||
+        obj2.y + obj2.realHeight / 2 < obj1.y - obj1.realHeight / 2
     );
 }
 

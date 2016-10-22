@@ -24,6 +24,7 @@ export default class Plane extends Shape {
         this.imgSum = 11;
         this.colourSpeed = 50;
         this.realWidth = width * 0.8;
+        this.realHeight = height * 0.8;
     }
 
     public fire(option: [number, boolean][], scale: number): Bullet[] {

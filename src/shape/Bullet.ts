@@ -24,7 +24,7 @@ export class Bullet extends Shape {
         this.speedSpan += 0.12 * typeIndex;
     }
 
-    public ATK: number = 0;
+    public ATK: number = 1;
 
     /**
      * 子弹飞行速度，每多少毫秒移动一个单位长度
@@ -33,7 +33,7 @@ export class Bullet extends Shape {
      * @type {number}
      * @memberOf Bullet
      */
-    protected speedSpan: number = 0.4;
+    protected speedSpan: number = 0.24;
 
     protected baseY: number;
 
