@@ -166,6 +166,7 @@
 	                self.bulletList = self.bulletList.concat(arr);
 	            }
 	            self.checkIntersect(); // 碰撞检测
+	            self.onGC(); // 垃圾回收
 	            self.onPaint(); // 绘制
 	        });
 	    };
@@ -177,7 +178,6 @@
 	     * @memberOf Logic
 	     */
 	    Logic.prototype.checkIntersect = function () {
-	        var _this = this;
 	        var i = 0, x = 0, y = 0, len = 0, len2 = 0;
 	        var enemy;
 	        var bullet;
@@ -199,7 +199,6 @@
 	                }
 	            }
 	        }
-	        this.bulletList = this.bulletList.filter(function (n) { return n.alive && n.y + n.height > 0; });
 	        // 敌军子弹跟自己碰撞检测 
 	        for (i = 0, len = this.enemyBulletList.length; i < len; i++) {
 	            enemyBullet = this.enemyBulletList[i];
@@ -208,7 +207,19 @@
 	                this.plane.makeOpacity(0.5, 10);
 	            }
 	        }
+	    };
+	    /**
+	     * 垃圾回收
+	     *
+	     * @private
+	     *
+	     * @memberOf Logic
+	     */
+	    Logic.prototype.onGC = function () {
+	        var _this = this;
+	        this.bulletList = this.bulletList.filter(function (n) { return n.alive && n.y + n.height > 0; });
 	        this.enemyBulletList = this.enemyBulletList.filter(function (n) { return n.alive && n.y - n.height < _this.height; });
+	        this.boomList = this.boomList.filter(function (n) { return n.alive; });
 	    };
 	    Logic.prototype.onPaint = function () {
 	        this.ctx.clearRect(0, 0, this.width, this.height);
@@ -739,7 +750,7 @@
 	    __extends(Plane, _super);
 	    function Plane(x, y, width, height) {
 	        _super.call(this, x, y, width, height);
-	        this.fireSpan = 80;
+	        this.fireSpan = 110;
 	        this.lastFireTime = new Date();
 	        this.img = img;
 	        this.imgSum = 11;

@@ -128,6 +128,7 @@ export default class Logic {
             }
 
             self.checkIntersect(); // 碰撞检测
+            self.onGC();  // 垃圾回收
             self.onPaint();  // 绘制
         });
     }
@@ -162,8 +163,6 @@ export default class Logic {
             }
         }
 
-        this.bulletList = this.bulletList.filter(n => n.alive && n.y + n.height > 0);
-
         // 敌军子弹跟自己碰撞检测 
         for (i = 0, len = this.enemyBulletList.length; i < len; i++) {
             enemyBullet = this.enemyBulletList[i];
@@ -173,8 +172,19 @@ export default class Logic {
             }
         }
 
-        this.enemyBulletList = this.enemyBulletList.filter(n => n.alive && n.y - n.height < this.height);
+    }
 
+    /**
+     * 垃圾回收
+     * 
+     * @private
+     * 
+     * @memberOf Logic
+     */
+    private onGC(): void {
+        this.bulletList = this.bulletList.filter(n => n.alive && n.y + n.height > 0);
+        this.enemyBulletList = this.enemyBulletList.filter(n => n.alive && n.y - n.height < this.height);
+        this.boomList = this.boomList.filter(n => n.alive);
     }
 
 
