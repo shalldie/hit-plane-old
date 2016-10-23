@@ -1,10 +1,13 @@
-import { imgPlane } from './../img/imgBase64';
+import { imgPlane, imgHP } from './../img/imgBase64';
 import Shape from './Shape';
-import { imgSpirit } from '../utils/utils';
+import { imgSpirit, imgDrawSingle } from '../utils/utils';
 import { Bullet } from './Bullet';
 
 let img = new Image();
 img.src = imgPlane;
+
+let imghp = new Image();
+
 
 /**
  * 飞机，打飞机~ 大哥哥这是什么？呀！好长！诶？！好滑哦(๑• . •๑)！阿呜～
@@ -18,13 +21,25 @@ export default class Plane extends Shape {
     protected fireSpan: number = 120;
     protected lastFireTime: Date = new Date();
 
+    private maxHP: number;
+
+    /**
+     * 当前HP
+     * 
+     * @type {number}
+     * @memberOf Plane
+     */
+    public HP: number;
+
     constructor(x: number, y: number, width: number, height: number) {
         super(x, y, width, height);
         this.img = img;
         this.imgSum = 11;
         this.colourSpeed = 50;
-        this.realWidth = width * 0.8;
-        this.realHeight = height * 0.8;
+        this.realWidth = width * 0.5;
+        this.realHeight = height * 0.5;
+        this.maxHP = 100;
+        this.HP = this.maxHP;
     }
 
     public fire(option: [number, boolean][], scale: number): Bullet[] {
@@ -71,6 +86,10 @@ export default class Plane extends Shape {
         }
 
         imgSpirit(ctx, this.img, this.colourSpeed, this.createTime, this.ifImgX, this.imgSum, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height, opa);
+
+        // 绘制 HP
+        imgDrawSingle(ctx, imghp, 0, 0, imghp.width, imghp.height, this.x - this.width / 2, this.y - this.height / 2 - 20, this.width * this.HP / this.maxHP, 10, 1);
+
 
         // this.drawBullets(ctx);
     }

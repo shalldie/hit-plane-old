@@ -127,6 +127,13 @@ export default class Logic {
         });
     }
 
+    /**
+     * 碰撞检测，并判断有效性
+     * 
+     * @private
+     * 
+     * @memberOf Logic
+     */
     private checkIntersect(): void {
         let i = 0, x = 0, y = 0, len = 0, len2 = 0;
         let enemy: Enemy;
@@ -155,13 +162,15 @@ export default class Logic {
         for (i = 0, len = this.enemyBulletList.length; i < len; i++) {
             enemyBullet = this.enemyBulletList[i];
             if (this.plane.alive && utils.ifIntersect(this.plane, enemyBullet)) {  // 被击中
-                this.plane.alive = false;
+                // this.plane.alive = false;
+                this.plane.makeOpacity(0.5, 10);
             }
         }
 
         this.enemyBulletList = this.enemyBulletList.filter(n => n.alive && n.y - n.height < this.height);
 
     }
+
 
     private onPaint(): void {
         this.ctx.clearRect(0, 0, this.width, this.height);

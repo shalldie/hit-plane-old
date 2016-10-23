@@ -61,7 +61,7 @@ export default class Enemy extends Shape {
         this.img = img;
         this.HP = hp;
         this.maxHP = hp;
-        this.realWidth = width * 0.8;
+        this.realWidth = width;
     }
 
     /**
@@ -95,6 +95,8 @@ export default class Enemy extends Shape {
         // imgDrawSingle(ctx,imghp)
         // 自身
         imgDrawSingle(ctx, this.img, this.area.x, this.area.y, this.area.w, this.area.h, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height, opa);
+
+        // ctx.strokeRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
 
     }
 

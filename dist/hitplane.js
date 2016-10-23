@@ -164,6 +164,13 @@
 	            self.onPaint(); // 绘制
 	        });
 	    };
+	    /**
+	     * 碰撞检测，并判断有效性
+	     *
+	     * @private
+	     *
+	     * @memberOf Logic
+	     */
 	    Logic.prototype.checkIntersect = function () {
 	        var _this = this;
 	        var i = 0, x = 0, y = 0, len = 0, len2 = 0;
@@ -191,7 +198,8 @@
 	        for (i = 0, len = this.enemyBulletList.length; i < len; i++) {
 	            enemyBullet = this.enemyBulletList[i];
 	            if (this.plane.alive && utils.ifIntersect(this.plane, enemyBullet)) {
-	                this.plane.alive = false;
+	                // this.plane.alive = false;
+	                this.plane.makeOpacity(0.5, 10);
 	            }
 	        }
 	        this.enemyBulletList = this.enemyBulletList.filter(function (n) { return n.alive && n.y - n.height < _this.height; });
@@ -403,7 +411,7 @@
 	        this.img = img;
 	        this.HP = hp;
 	        this.maxHP = hp;
-	        this.realWidth = width * 0.8;
+	        this.realWidth = width;
 	    }
 	    /**
 	     * 开火
@@ -434,6 +442,7 @@
 	        // imgDrawSingle(ctx,imghp)
 	        // 自身
 	        utils_1.imgDrawSingle(ctx, this.img, this.area.x, this.area.y, this.area.w, this.area.h, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height, opa);
+	        // ctx.strokeRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
 	    };
 	    return Enemy;
 	}(Shape_1.default));
@@ -645,6 +654,8 @@
 	         * @memberOf Bullet
 	         */
 	        this.speedSpan = 0.24;
+	        this.realWidth = width / 2;
+	        this.realHeight = height;
 	        this.img = new Image();
 	        this.img.src = imgBase64_1.imgBulletArr[typeIndex];
 	        this.baseY = y;
@@ -661,6 +672,7 @@
 	        //     return;
 	        // }
 	        ctx.drawImage(this.img, 0, 0, this.img.width, this.img.height, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
+	        // ctx.strokeRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
 	    };
 	    return Bullet;
 	}(Shape_1.default));
@@ -704,6 +716,7 @@
 	var Bullet_1 = __webpack_require__(14);
 	var img = new Image();
 	img.src = imgBase64_1.imgPlane;
+	var imghp = new Image();
 	/**
 	 * 飞机，打飞机~ 大哥哥这是什么？呀！好长！诶？！好滑哦(๑• . •๑)！阿呜～
 	 *
@@ -720,8 +733,10 @@
 	        this.img = img;
 	        this.imgSum = 11;
 	        this.colourSpeed = 50;
-	        this.realWidth = width * 0.8;
-	        this.realHeight = height * 0.8;
+	        this.realWidth = width * 0.5;
+	        this.realHeight = height * 0.5;
+	        this.maxHP = 100;
+	        this.HP = this.maxHP;
 	    }
 	    Plane.prototype.fire = function (option, scale) {
 	        // 发射间隔
@@ -763,6 +778,8 @@
 	            opa = this.opacity;
 	        }
 	        utils_1.imgSpirit(ctx, this.img, this.colourSpeed, this.createTime, this.ifImgX, this.imgSum, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height, opa);
+	        // 绘制 HP
+	        utils_1.imgDrawSingle(ctx, imghp, 0, 0, imghp.width, imghp.height, this.x - this.width / 2, this.y - this.height / 2 - 20, this.width * this.HP / this.maxHP, 10, 1);
 	        // this.drawBullets(ctx);
 	    };
 	    return Plane;
