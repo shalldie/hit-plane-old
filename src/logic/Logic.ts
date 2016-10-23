@@ -103,6 +103,11 @@ export default class Logic {
         }, 500);
     }
 
+    private newBoom(x: number, y: number, width: number): void {
+        let boom = new Boom(x, y, width * this.scale, width * this.scale);
+        this.boomList.push(boom);
+    }
+
     /**
      * 开始帧动画
      * 
@@ -151,6 +156,7 @@ export default class Logic {
                     if (enemy.HP <= 0) {  // 被打挂了
                         enemy.HP = 0;
                         enemy.alive = false;
+                        this.newBoom(enemy.x, enemy.y, enemy.width * 1.2);
                     }
                 }
             }
@@ -179,6 +185,7 @@ export default class Logic {
         let bullet: Bullet;
         let enemyBullet: EnemyBullet;
         let enemy: Enemy;
+        let boom: Boom;
 
         // 绘制自身子弹
         for (i = 0, len = this.bulletList.length; i < len; i++) {
@@ -201,6 +208,14 @@ export default class Logic {
             enemy = this.enemyList[i];
             if (enemy.alive) {
                 enemy.onPaint(this.ctx, this.scale);
+            }
+        }
+
+        // 爆炸效果
+        for (i = 0, len = this.boomList.length; i < len; i++) {
+            boom = this.boomList[i];
+            if (boom.alive) {
+                boom.onPaint(this.ctx);
             }
         }
 

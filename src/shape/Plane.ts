@@ -19,7 +19,7 @@ imghp.src = imgHP;
  */
 export default class Plane extends Shape {
 
-    protected fireSpan: number = 120;
+    protected fireSpan: number = 80;
     protected lastFireTime: Date = new Date();
 
     private maxHP: number;
