@@ -7,6 +7,7 @@ let img = new Image();
 img.src = imgPlane;
 
 let imghp = new Image();
+imghp.src = imgHP;
 
 
 /**
@@ -88,9 +89,9 @@ export default class Plane extends Shape {
         imgSpirit(ctx, this.img, this.colourSpeed, this.createTime, this.ifImgX, this.imgSum, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height, opa);
 
         // 绘制 HP
-        imgDrawSingle(ctx, imghp, 0, 0, imghp.width, imghp.height, this.x - this.width / 2, this.y - this.height / 2 - 20, this.width * this.HP / this.maxHP, 10, 1);
+        // imgDrawSingle(ctx, imghp, 0, 0, imghp.width, imghp.height, this.x - this.width / 2, this.y - this.height / 2 - 20, this.width * this.HP / this.maxHP, 10, 1);
 
-
+        // ctx.strokeRect(this.x - this.realWidth / 2, this.y - this.realHeight / 2, this.realWidth, this.realHeight);
         // this.drawBullets(ctx);
     }
 

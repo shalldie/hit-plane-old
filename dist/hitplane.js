@@ -717,6 +717,7 @@
 	var img = new Image();
 	img.src = imgBase64_1.imgPlane;
 	var imghp = new Image();
+	imghp.src = imgBase64_1.imgHP;
 	/**
 	 * 飞机，打飞机~ 大哥哥这是什么？呀！好长！诶？！好滑哦(๑• . •๑)！阿呜～
 	 *
@@ -779,7 +780,8 @@
 	        }
 	        utils_1.imgSpirit(ctx, this.img, this.colourSpeed, this.createTime, this.ifImgX, this.imgSum, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height, opa);
 	        // 绘制 HP
-	        utils_1.imgDrawSingle(ctx, imghp, 0, 0, imghp.width, imghp.height, this.x - this.width / 2, this.y - this.height / 2 - 20, this.width * this.HP / this.maxHP, 10, 1);
+	        // imgDrawSingle(ctx, imghp, 0, 0, imghp.width, imghp.height, this.x - this.width / 2, this.y - this.height / 2 - 20, this.width * this.HP / this.maxHP, 10, 1);
+	        // ctx.strokeRect(this.x - this.realWidth / 2, this.y - this.realHeight / 2, this.realWidth, this.realHeight);
 	        // this.drawBullets(ctx);
 	    };
 	    return Plane;
