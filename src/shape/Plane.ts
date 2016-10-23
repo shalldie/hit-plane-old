@@ -82,8 +82,12 @@ export default class Plane extends Shape {
         if (!this.alive) return;
 
         var opa = 1;
+        // 半透明状态
         if (this.opacity != 1 && new Date().getTime() - this.opacityTime.getTime() < this.opacityLast) {
             opa = this.opacity;
+        }
+        else if (this.opacity != 1) {  // 超时恢复
+            opa = 1;
         }
 
         imgSpirit(ctx, this.img, this.colourSpeed, this.createTime, this.ifImgX, this.imgSum, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height, opa);

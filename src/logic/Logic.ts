@@ -91,7 +91,7 @@ export default class Logic {
      * @memberOf Logic
      */
     private newEnemy(): void {
-        let enemy: Enemy = new Enemy(this.width / 2, 100, 100 * this.scale, 1, 100);
+        let enemy: Enemy = new Enemy(this.width / 2, 100 * this.scale, 100 * this.scale, 1, 100);
         this.enemyList.push(enemy);
         window["enemy"] = enemy;
         let self = this;
@@ -200,7 +200,7 @@ export default class Logic {
         for (i = 0, len = this.enemyList.length; i < len; i++) {
             enemy = this.enemyList[i];
             if (enemy.alive) {
-                enemy.onPaint(this.ctx);
+                enemy.onPaint(this.ctx, this.scale);
             }
         }
 

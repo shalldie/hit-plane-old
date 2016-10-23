@@ -80,17 +80,18 @@ export default class Enemy extends Shape {
      * 绘制自身
      * 
      * @param {CanvasRenderingContext2D} ctx
+     * @param {number} [scale=1]
      * 
      * @memberOf Enemy
      */
-    public onPaint(ctx: CanvasRenderingContext2D): void {
+    public onPaint(ctx: CanvasRenderingContext2D, scale: number = 1): void {
         var opa = 1;
         if (this.opacity != 1 && new Date().getTime() - this.opacityTime.getTime() < this.opacityLast) {
             opa = this.opacity;
         }
 
         // 血条
-        imgDrawSingle(ctx, imghp, 0, 0, imghp.width, imghp.height, this.x - this.width / 2, this.y - this.height / 2 - 20, this.width * this.HP / this.maxHP, 10);
+        imgDrawSingle(ctx, imghp, 0, 0, imghp.width, imghp.height, this.x - this.width / 2, this.y - this.height / 2 - 20 * scale, this.width * this.HP / this.maxHP, 10 * scale);
 
         // imgDrawSingle(ctx,imghp)
         // 自身
