@@ -6,6 +6,8 @@ import { imgEnemy, imgHP } from '../img/imgBase64';
 
 import { EnemyBullet } from './Bullet'
 
+import AI from '../logic/AI';
+
 let img = new Image();
 img.src = imgEnemy;
 
@@ -50,6 +52,8 @@ export default class Enemy extends Shape {
 
     private maxHP: number;
     public HP: number;
+
+    public ai: AI;
 
     // public 
 
