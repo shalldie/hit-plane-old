@@ -38,6 +38,30 @@ let areaArr = [  // 每种敌军飞机在图片中的坐标和宽高
     }
 ];
 
+/**
+ * 飞机类型
+ * 
+ * @export
+ * @enum {number}
+ */
+export enum EnemyType {
+    /**
+     * 黄色小飞机
+     */
+    Yello,
+    /**
+     * 白色小飞机
+     */
+    White,
+    /**
+     * 红色双螺旋桨飞机
+     */
+    Red,
+    /**
+     * 绿色双螺旋桨飞机
+     */
+    Green
+}
 
 /**
  * 敌军
@@ -55,10 +79,13 @@ export default class Enemy extends Shape {
 
     public ai: AI;
 
+    private baseX: number;
+    private baseY: number;
+
     // public 
 
-    constructor(x: number, y: number, width: number, typeIndex: number, hp: number) {
-        var area = areaArr[typeIndex];
+    constructor(x: number, y: number, width: number, enemyType: EnemyType, hp: number) {
+        var area = areaArr[enemyType];
         let height: number = width * area.h / area.w;
         super(x, y, width, height);
         this.area = area;
@@ -66,6 +93,8 @@ export default class Enemy extends Shape {
         this.HP = hp;
         this.maxHP = hp;
         this.realWidth = width;
+        this.baseX = x;
+        this.baseY = y;
     }
 
     /**
@@ -89,6 +118,8 @@ export default class Enemy extends Shape {
      * @memberOf Enemy
      */
     public onPaint(ctx: CanvasRenderingContext2D, scale: number = 1): void {
+        // this.ai.behave(this);
+
         var opa = 1;
         if (this.opacity != 1 && new Date().getTime() - this.opacityTime.getTime() < this.opacityLast) {
             opa = this.opacity;
