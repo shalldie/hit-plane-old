@@ -18,6 +18,34 @@ let logic = new Logic(ele.width, ele.height, ctx);
 
 logic.start();
 
-ele.addEventListener('mousemove', function (ex) {
-    logic.setPosition(ex.offsetX, ex.offsetY);
-});
+
+let ifPC = !navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i);
+
+if (ifPC) {
+    ele.addEventListener('mousemove', function (ex) {
+        logic.setPosition(ex.offsetX, ex.offsetY);
+    });
+}
+else {
+    let basePoint = {
+        x: 0,
+        y: 0
+    };
+
+    ele.addEventListener('touchstart', function (ex) {
+        let touch = ex.touches[0];
+        basePoint = {
+            x: touch.clientX,
+            y: touch.clientY
+        };
+    });
+
+    ele.addEventListener('touchmove', function (ex) {
+        let touch = ex.touches[0];
+        logic.offsetPosition((touch.clientX - basePoint.x) * 2, (touch.clientY - basePoint.y) * 2);
+        basePoint = {
+            x: touch.clientX,
+            y: touch.clientY
+        };
+    });
+}

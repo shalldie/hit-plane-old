@@ -24,7 +24,7 @@ body {
     box-sizing: border-box;
     background: url('../src/img/bg.jpg') repeat-y;
     background-size: 100% 50%;
-    animation: bgMove 10s linear infinite;
+    animation: bgMove 20s linear infinite;
     z-index: 998; /*只要998，口口口口抱回家 */
 }
 

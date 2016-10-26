@@ -125,7 +125,7 @@ export default class Enemy extends Shape {
         // this.ai.behave(this);
         let timeNow = new Date();
 
-        this.ai.behave(this, timeNow); // ai 行为
+        this.ai.behave(this, timeNow, scale); // ai 行为
 
         var opa = 1;
         if (this.opacity != 1 && timeNow.getTime() - this.opacityTime.getTime() < this.opacityLast) {

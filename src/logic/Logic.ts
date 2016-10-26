@@ -61,6 +61,9 @@ export default class Logic {
 
     public start(): void {
         this.newPlane();
+        setInterval(function () {
+            this.newEnemy();
+        }.bind(this), 2000);
         this.newEnemy();
         this.keepRefresh();
     }
@@ -68,6 +71,11 @@ export default class Logic {
     public setPosition(x: number, y: number) {
         this.plane.x = x;
         this.plane.y = y;
+    }
+
+    public offsetPosition(x: number, y: number) {
+        this.plane.x += x;
+        this.plane.y += y;
     }
 
     /**
@@ -91,16 +99,27 @@ export default class Logic {
      * @memberOf Logic
      */
     private newEnemy(): void {
-        let enemy: Enemy = new Enemy(this.width / 2, 100 * this.scale, 100 * this.scale, 1, 100);
+        let x = this.width / 10 * ~~(Math.random() * 10 + 1);
+        let wid = (80 + Math.random() * 80) * this.scale;
+        let enemyType = ~~(Math.random() * 4);
+
+        let enemy: Enemy = new Enemy(x, 0, wid, enemyType, 100);
+        enemy.y = -enemy.height / 2;
+        if (enemy.x + enemy.width / 2 > this.width || enemy.x < enemy.width / 2) {
+            this.newEnemy();
+            return;
+        }
+        enemy.speed *= Math.random() + 1;
         this.enemyList.push(enemy);
-        window["enemy"] = enemy;
+
         let self = this;
         let timer = setInterval(function () {
-            self.enemyBulletList = self.enemyBulletList.concat(enemy.fire(self.scale));
             if (!enemy.alive) {
                 clearInterval(timer);
+                return;
             }
-        }, 500);
+            self.enemyBulletList = self.enemyBulletList.concat(enemy.fire(self.scale));
+        }, 800 + Math.random() * 500);
     }
 
     private newBoom(x: number, y: number, width: number): void {
@@ -157,7 +176,7 @@ export default class Logic {
                     if (enemy.HP <= 0) {  // 被打挂了
                         enemy.HP = 0;
                         enemy.alive = false;
-                        this.newBoom(enemy.x, enemy.y, enemy.width * 1.2);
+                        this.newBoom(enemy.x, enemy.y, enemy.width * 1.2 / this.scale);
                     }
                 }
             }

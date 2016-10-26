@@ -57,9 +57,33 @@
 	var ctx = ele.getContext("2d");
 	var logic = new Logic_1.default(ele.width, ele.height, ctx);
 	logic.start();
-	ele.addEventListener('mousemove', function (ex) {
-	    logic.setPosition(ex.offsetX, ex.offsetY);
-	});
+	var ifPC = !navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i);
+	if (ifPC) {
+	    ele.addEventListener('mousemove', function (ex) {
+	        logic.setPosition(ex.offsetX, ex.offsetY);
+	    });
+	}
+	else {
+	    var basePoint_1 = {
+	        x: 0,
+	        y: 0
+	    };
+	    ele.addEventListener('touchstart', function (ex) {
+	        var touch = ex.touches[0];
+	        basePoint_1 = {
+	            x: touch.clientX,
+	            y: touch.clientY
+	        };
+	    });
+	    ele.addEventListener('touchmove', function (ex) {
+	        var touch = ex.touches[0];
+	        logic.offsetPosition((touch.clientX - basePoint_1.x) * 2, (touch.clientY - basePoint_1.y) * 2);
+	        basePoint_1 = {
+	            x: touch.clientX,
+	            y: touch.clientY
+	        };
+	    });
+	}
 
 
 /***/ },
@@ -105,12 +129,19 @@
 	    }
 	    Logic.prototype.start = function () {
 	        this.newPlane();
+	        setInterval(function () {
+	            this.newEnemy();
+	        }.bind(this), 2000);
 	        this.newEnemy();
 	        this.keepRefresh();
 	    };
 	    Logic.prototype.setPosition = function (x, y) {
 	        this.plane.x = x;
 	        this.plane.y = y;
+	    };
+	    Logic.prototype.offsetPosition = function (x, y) {
+	        this.plane.x += x;
+	        this.plane.y += y;
 	    };
 	    /**
 	     * 出现新飞机
@@ -132,16 +163,25 @@
 	     * @memberOf Logic
 	     */
 	    Logic.prototype.newEnemy = function () {
-	        var enemy = new Enemy_1.default(this.width / 2, 100 * this.scale, 100 * this.scale, 1, 100);
+	        var x = this.width / 10 * ~~(Math.random() * 10 + 1);
+	        var wid = (80 + Math.random() * 80) * this.scale;
+	        var enemyType = ~~(Math.random() * 4);
+	        var enemy = new Enemy_1.default(x, 0, wid, enemyType, 100);
+	        enemy.y = -enemy.height / 2;
+	        if (enemy.x + enemy.width / 2 > this.width || enemy.x < enemy.width / 2) {
+	            this.newEnemy();
+	            return;
+	        }
+	        enemy.speed *= Math.random() + 1;
 	        this.enemyList.push(enemy);
-	        window["enemy"] = enemy;
 	        var self = this;
 	        var timer = setInterval(function () {
-	            self.enemyBulletList = self.enemyBulletList.concat(enemy.fire(self.scale));
 	            if (!enemy.alive) {
 	                clearInterval(timer);
+	                return;
 	            }
-	        }, 500);
+	            self.enemyBulletList = self.enemyBulletList.concat(enemy.fire(self.scale));
+	        }, 800 + Math.random() * 500);
 	    };
 	    Logic.prototype.newBoom = function (x, y, width) {
 	        var boom = new Boom_1.default(x, y, width * this.scale, width * this.scale);
@@ -194,7 +234,7 @@
 	                    if (enemy.HP <= 0) {
 	                        enemy.HP = 0;
 	                        enemy.alive = false;
-	                        this.newBoom(enemy.x, enemy.y, enemy.width * 1.2);
+	                        this.newBoom(enemy.x, enemy.y, enemy.width * 1.2 / this.scale);
 	                    }
 	                }
 	            }
@@ -703,7 +743,7 @@
 	        if (scale === void 0) { scale = 1; }
 	        // this.ai.behave(this);
 	        var timeNow = new Date();
-	        this.ai.behave(this, timeNow); // ai 行为
+	        this.ai.behave(this, timeNow, scale); // ai 行为
 	        var opa = 1;
 	        if (this.opacity != 1 && timeNow.getTime() - this.opacityTime.getTime() < this.opacityLast) {
 	            opa = this.opacity;
@@ -748,7 +788,7 @@
 	        if (typeIndex === void 0) { typeIndex = 0; }
 	        if (scale === void 0) { scale = 1; }
 	        _super.call(this, x, y, width, height);
-	        this.ATK = 1;
+	        this.ATK = 10;
 	        /**
 	         * 子弹飞行速度，每多少毫秒移动一个单位长度
 	         *
@@ -756,7 +796,7 @@
 	         * @type {number}
 	         * @memberOf Bullet
 	         */
-	        this.speedSpan = 0.24;
+	        this.speedSpan = 0.34;
 	        this.realWidth = width / 2;
 	        this.realHeight = height;
 	        this.img = new Image();
@@ -785,7 +825,7 @@
 	    function EnemyBullet(x, y, width, scale) {
 	        if (scale === void 0) { scale = 1; }
 	        _super.call(this, x, y, width, width, 3);
-	        this.speedSpan = 2 / scale;
+	        this.speedSpan = 3 / scale;
 	    }
 	    EnemyBullet.prototype.onPaint = function (ctx) {
 	        var timeSpan = new Date().getTime() - this.createTime.getTime();
@@ -913,13 +953,15 @@
 	    function AI() {
 	        this.behaveType = 0;
 	    }
-	    AI.prototype.behave = function (enemy, timeNow) {
+	    AI.prototype.behave = function (enemy, timeNow, scale) {
+	        if (scale === void 0) { scale = 1; }
 	        var behaveArr = [
 	            this.getNormalBehave
 	        ];
-	        behaveArr[this.behaveType](enemy, timeNow);
+	        behaveArr[this.behaveType](enemy, timeNow, scale);
 	    };
-	    AI.prototype.getNormalBehave = function (enemy, timeNow) {
+	    AI.prototype.getNormalBehave = function (enemy, timeNow, scale) {
+	        if (scale === void 0) { scale = 1; }
 	        var timeDiff = timeNow.getTime() - enemy.createTime.getTime();
 	        enemy.y = enemy.baseY + timeDiff * enemy.speed;
 	    };

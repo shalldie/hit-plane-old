@@ -10,14 +10,14 @@ export enum BehaveType {
 export default class AI {
     public behaveType: number = 0;
 
-    public behave(enemy: Enemy, timeNow: Date): void {
+    public behave(enemy: Enemy, timeNow: Date, scale: number = 1): void {
         let behaveArr = [
             this.getNormalBehave
         ];
-        behaveArr[this.behaveType](enemy, timeNow);
+        behaveArr[this.behaveType](enemy, timeNow, scale);
     }
 
-    private getNormalBehave(enemy: Enemy, timeNow: Date): void {
+    private getNormalBehave(enemy: Enemy, timeNow: Date, scale: number = 1): void {
         let timeDiff = timeNow.getTime() - enemy.createTime.getTime();
         enemy.y = enemy.baseY + timeDiff * enemy.speed;
     }

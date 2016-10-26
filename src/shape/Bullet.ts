@@ -26,7 +26,7 @@ export class Bullet extends Shape {
         this.speedSpan += 0.12 * typeIndex;
     }
 
-    public ATK: number = 1;
+    public ATK: number = 10;
 
     /**
      * 子弹飞行速度，每多少毫秒移动一个单位长度
@@ -35,7 +35,7 @@ export class Bullet extends Shape {
      * @type {number}
      * @memberOf Bullet
      */
-    protected speedSpan: number = 0.24;
+    protected speedSpan: number = 0.34;
 
     protected baseY: number;
 
@@ -59,7 +59,7 @@ export class Bullet extends Shape {
 export class EnemyBullet extends Bullet {
     constructor(x: number, y: number, width: number, scale: number = 1) {
         super(x, y, width, width, 3);
-        this.speedSpan = 2 / scale;
+        this.speedSpan = 3 / scale;
     }
 
     public onPaint(ctx: CanvasRenderingContext2D): void {
