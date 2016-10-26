@@ -28,7 +28,10 @@ module.exports = {
 
         }
     },
+    // eslint: {
+    //     configFile: './.eslintrc'
+    // },
     externals: {
-        'jQuery': 'jQuery'
+        // 'jQuery': 'jQuery'
     }
 };
