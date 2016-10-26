@@ -185,6 +185,8 @@ export default class Logic {
         this.bulletList = this.bulletList.filter(n => n.alive && n.y + n.height > 0);
         this.enemyBulletList = this.enemyBulletList.filter(n => n.alive && n.y - n.height < this.height);
         this.boomList = this.boomList.filter(n => n.alive);
+
+        this.enemyList = this.enemyList.filter(n => n.alive && n.y < n.height + this.height);
     }
 
 

@@ -220,6 +220,7 @@
 	        this.bulletList = this.bulletList.filter(function (n) { return n.alive && n.y + n.height > 0; });
 	        this.enemyBulletList = this.enemyBulletList.filter(function (n) { return n.alive && n.y - n.height < _this.height; });
 	        this.boomList = this.boomList.filter(function (n) { return n.alive; });
+	        this.enemyList = this.enemyList.filter(function (n) { return n.alive && n.y < n.height + _this.height; });
 	    };
 	    Logic.prototype.onPaint = function () {
 	        this.ctx.clearRect(0, 0, this.width, this.height);
@@ -523,7 +524,7 @@
 	        /**
 	         * 创建时间
 	         *
-	         * @protected
+	         * @public
 	         * @type {Date}
 	         * @memberOf Shape
 	         */
@@ -601,6 +602,7 @@
 	var utils_1 = __webpack_require__(2);
 	var imgBase64_1 = __webpack_require__(4);
 	var Bullet_1 = __webpack_require__(16);
+	var AI_1 = __webpack_require__(18);
 	var img = new Image();
 	img.src = imgBase64_1.imgEnemy;
 	var imghp = new Image();
@@ -674,6 +676,8 @@
 	        this.realWidth = width;
 	        this.baseX = x;
 	        this.baseY = y;
+	        this.ai = new AI_1.default();
+	        this.speed = 0.1;
 	    }
 	    /**
 	     * 开火
@@ -696,10 +700,12 @@
 	     * @memberOf Enemy
 	     */
 	    Enemy.prototype.onPaint = function (ctx, scale) {
-	        // this.ai.behave(this);
 	        if (scale === void 0) { scale = 1; }
+	        // this.ai.behave(this);
+	        var timeNow = new Date();
+	        this.ai.behave(this, timeNow); // ai 行为
 	        var opa = 1;
-	        if (this.opacity != 1 && new Date().getTime() - this.opacityTime.getTime() < this.opacityLast) {
+	        if (this.opacity != 1 && timeNow.getTime() - this.opacityTime.getTime() < this.opacityLast) {
 	            opa = this.opacity;
 	        }
 	        // 血条
@@ -889,6 +895,40 @@
 	}(Shape_1.default));
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = Plane;
+
+
+/***/ },
+/* 18 */
+/***/ function(module, exports) {
+
+	"use strict";
+	(function (BehaveType) {
+	    BehaveType[BehaveType["Normal"] = 0] = "Normal";
+	    BehaveType[BehaveType["Shake"] = 1] = "Shake";
+	    BehaveType[BehaveType["Crooked"] = 2] = "Crooked";
+	    BehaveType[BehaveType["Boss"] = 3] = "Boss";
+	})(exports.BehaveType || (exports.BehaveType = {}));
+	var BehaveType = exports.BehaveType;
+	var AI = (function () {
+	    function AI() {
+	        this.behaveType = 0;
+	    }
+	    AI.prototype.behave = function (enemy, timeNow) {
+	        var behaveArr = [
+	            this.getNormalBehave
+	        ];
+	        behaveArr[this.behaveType](enemy, timeNow);
+	    };
+	    AI.prototype.getNormalBehave = function (enemy, timeNow) {
+	        var timeDiff = timeNow.getTime() - enemy.createTime.getTime();
+	        enemy.y = enemy.baseY + timeDiff * enemy.speed;
+	    };
+	    AI.prototype.getShakeBehave = function (enemy, timeNow) {
+	    };
+	    return AI;
+	}());
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = AI;
 
 
 /***/ }

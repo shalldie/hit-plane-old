@@ -79,8 +79,10 @@ export default class Enemy extends Shape {
 
     public ai: AI;
 
-    private baseX: number;
-    private baseY: number;
+    public baseX: number;
+    public baseY: number;
+
+    public speed: number;
 
     // public 
 
@@ -95,6 +97,8 @@ export default class Enemy extends Shape {
         this.realWidth = width;
         this.baseX = x;
         this.baseY = y;
+        this.ai = new AI();
+        this.speed = 0.1;
     }
 
     /**
@@ -119,9 +123,12 @@ export default class Enemy extends Shape {
      */
     public onPaint(ctx: CanvasRenderingContext2D, scale: number = 1): void {
         // this.ai.behave(this);
+        let timeNow = new Date();
+
+        this.ai.behave(this, timeNow); // ai 行为
 
         var opa = 1;
-        if (this.opacity != 1 && new Date().getTime() - this.opacityTime.getTime() < this.opacityLast) {
+        if (this.opacity != 1 && timeNow.getTime() - this.opacityTime.getTime() < this.opacityLast) {
             opa = this.opacity;
         }
 

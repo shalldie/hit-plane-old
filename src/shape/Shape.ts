@@ -26,11 +26,11 @@ abstract class Shape {
     /**
      * 创建时间
      * 
-     * @protected
+     * @public
      * @type {Date}
      * @memberOf Shape
      */
-    protected createTime: Date = new Date();
+    public createTime: Date = new Date();
 
     /**
      * 渲染速度
@@ -153,7 +153,7 @@ abstract class Shape {
         if (this.opacity != 1 && new Date().getTime() - this.opacityTime.getTime() < this.opacityLast) {
             opa = this.opacity;
         }
-        
+
         imgSpirit(ctx, this.img, this.colourSpeed, this.createTime, this.ifImgX, this.imgSum, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height, opa);
     }
 
