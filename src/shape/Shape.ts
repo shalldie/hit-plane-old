@@ -145,8 +145,8 @@ abstract class Shape {
         this.y = y;
         this.width = width;
         this.height = height;
-        this.realWidth = width;
-        this.realHeight = height;
+        this.realWidth = width * scale;
+        this.realHeight = height * scale;
         this.scale = scale;
     }
 
@@ -164,7 +164,17 @@ abstract class Shape {
             opa = this.opacity;
         }
 
-        imgSpirit(ctx, this.img, this.colourSpeed, this.createTime, this.ifImgX, this.imgSum, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height, opa);
+        imgSpirit(
+            ctx,
+            this.img,
+            this.colourSpeed,
+            this.createTime,
+            this.ifImgX,
+            this.imgSum,
+            this.x - this.width / 2,
+            this.y - this.height / 2,
+            this.width, this.height,
+            opa);
     }
 
 

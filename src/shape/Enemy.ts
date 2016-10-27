@@ -94,7 +94,7 @@ export default class Enemy extends Shape {
         this.img = img;
         this.HP = hp;
         this.maxHP = hp;
-        this.realWidth = width;
+        this.realWidth = width * this.scale;
         this.baseX = x;
         this.baseY = y;
         this.ai = new AI();
@@ -131,11 +131,32 @@ export default class Enemy extends Shape {
         }
 
         // 血条
-        imgDrawSingle(ctx, imghp, 0, 0, imghp.width, imghp.height, this.x - this.width * this.scale / 2, this.y - this.height * this.scale / 2 - 20 * this.scale, this.width * this.scale * this.HP / this.maxHP, 10 * this.scale);
+        imgDrawSingle(
+            ctx,
+            imghp,
+            0,
+            0,
+            imghp.width,
+            imghp.height,
+            this.x - this.width * this.scale / 2,
+            this.y - this.height * this.scale / 2 - 20 * this.scale,
+            this.width * this.scale * this.HP / this.maxHP,
+            10 * this.scale);
 
         // imgDrawSingle(ctx,imghp)
         // 自身
-        imgDrawSingle(ctx, this.img, this.area.x, this.area.y, this.area.w, this.area.h, this.x - this.width * this.scale / 2, this.y - this.height * this.scale / 2, this.width * this.scale, this.height * this.scale, opa);
+        imgDrawSingle(
+            ctx,
+            this.img,
+            this.area.x,
+            this.area.y,
+            this.area.w,
+            this.area.h,
+            this.x - this.width * this.scale / 2,
+            this.y - this.height * this.scale / 2,
+            this.width * this.scale,
+            this.height * this.scale,
+            opa);
 
         // ctx.strokeRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
 

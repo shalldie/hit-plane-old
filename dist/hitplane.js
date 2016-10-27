@@ -82,6 +82,8 @@
 	            x: touch.clientX,
 	            y: touch.clientY
 	        };
+	        ex.preventDefault();
+	        ex.cancelBubble = true;
 	    });
 	}
 
@@ -168,7 +170,7 @@
 	        var wid = (80 + Math.random() * 80) * this.scale;
 	        var enemyType = ~~(Math.random() * 4);
 	        var enemy = new Enemy_1.default(x, 0, wid, enemyType, 100, this.scale);
-	        enemy.y = -enemy.height / 2;
+	        enemy.y = -enemy.height * this.scale / 2;
 	        if (enemy.x + enemy.width / 2 > this.width || enemy.x < enemy.width / 2) {
 	            this.newEnemy();
 	            return;
@@ -592,8 +594,8 @@
 	        this.y = y;
 	        this.width = width;
 	        this.height = height;
-	        this.realWidth = width;
-	        this.realHeight = height;
+	        this.realWidth = width * scale;
+	        this.realHeight = height * scale;
 	        this.scale = scale;
 	    }
 	    /**
@@ -716,7 +718,7 @@
 	        this.img = img;
 	        this.HP = hp;
 	        this.maxHP = hp;
-	        this.realWidth = width;
+	        this.realWidth = width * this.scale;
 	        this.baseX = x;
 	        this.baseY = y;
 	        this.ai = new AI_1.default();
