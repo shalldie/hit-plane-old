@@ -57,7 +57,7 @@ export default class Logic {
         this.height = height;
         this.ctx = ctx;
         this.scale = this.height / 1200; // 等比缩放，保证在不同分辨率下比例一致，类似rem的效果
-        this.scale = 1;
+        // this.scale = 1;
     }
 
     public start(): void {
