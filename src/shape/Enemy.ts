@@ -86,10 +86,10 @@ export default class Enemy extends Shape {
 
     // public 
 
-    constructor(x: number, y: number, width: number, enemyType: EnemyType, hp: number) {
+    constructor(x: number, y: number, width: number, enemyType: EnemyType, hp: number, scale: number) {
         var area = areaArr[enemyType];
         let height: number = width * area.h / area.w;
-        super(x, y, width, height);
+        super(x, y, width, height, scale);
         this.area = area;
         this.img = img;
         this.HP = hp;
@@ -104,28 +104,26 @@ export default class Enemy extends Shape {
     /**
      * 开火
      * 
-     * @param {number} [scale=1]
      * @returns {EnemyBullet[]}
      * 
      * @memberOf Enemy
      */
-    public fire(scale: number = 1): EnemyBullet[] {
-        return [new EnemyBullet(this.x, this.y + this.height / 2 + 2, this.width / 2, scale)];
+    public fire(): EnemyBullet[] {
+        return [new EnemyBullet(this.x, this.y + this.height / 2 + 2, this.width / 2, this.scale)];
     }
 
     /**
      * 绘制自身
      * 
      * @param {CanvasRenderingContext2D} ctx
-     * @param {number} [scale=1]
      * 
      * @memberOf Enemy
      */
-    public onPaint(ctx: CanvasRenderingContext2D, scale: number = 1): void {
+    public onPaint(ctx: CanvasRenderingContext2D): void {
         // this.ai.behave(this);
         let timeNow = new Date();
 
-        this.ai.behave(this, timeNow, scale); // ai 行为
+        this.ai.behave(this, timeNow, this.scale); // ai 行为
 
         var opa = 1;
         if (this.opacity != 1 && timeNow.getTime() - this.opacityTime.getTime() < this.opacityLast) {
@@ -133,11 +131,11 @@ export default class Enemy extends Shape {
         }
 
         // 血条
-        imgDrawSingle(ctx, imghp, 0, 0, imghp.width, imghp.height, this.x - this.width / 2, this.y - this.height / 2 - 20 * scale, this.width * this.HP / this.maxHP, 10 * scale);
+        imgDrawSingle(ctx, imghp, 0, 0, imghp.width, imghp.height, this.x - this.width * this.scale / 2, this.y - this.height * this.scale / 2 - 20 * this.scale, this.width * this.scale * this.HP / this.maxHP, 10 * this.scale);
 
         // imgDrawSingle(ctx,imghp)
         // 自身
-        imgDrawSingle(ctx, this.img, this.area.x, this.area.y, this.area.w, this.area.h, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height, opa);
+        imgDrawSingle(ctx, this.img, this.area.x, this.area.y, this.area.w, this.area.h, this.x - this.width * this.scale / 2, this.y - this.height * this.scale / 2, this.width * this.scale, this.height * this.scale, opa);
 
         // ctx.strokeRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
 

@@ -103,6 +103,14 @@ abstract class Shape {
      */
     public realHeight: number;
 
+    /**
+     * 绘制时候的倍数，用于自适应
+     * 
+     * @type {number}
+     * @memberOf Shape
+     */
+    public scale: number;
+
     protected opacityTime: Date;
 
     protected opacityLast: number;
@@ -130,14 +138,16 @@ abstract class Shape {
      * @param {number} y
      * @param {number} width
      * @param {number} height
+     * @param {number} scale
      */
-    constructor(x: number, y: number, width: number, height: number) {
+    constructor(x: number, y: number, width: number, height: number, scale: number) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.realWidth = width;
         this.realHeight = height;
+        this.scale = scale;
     }
 
     /**

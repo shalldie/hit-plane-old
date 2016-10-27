@@ -16,7 +16,7 @@ import { imgSpirit } from '../utils/utils';  // 精灵渲染辅助方法
 export class Bullet extends Shape {
 
     constructor(x: number, y: number, width: number, height: number, typeIndex: number = 0, scale: number = 1) {
-        super(x, y, width, height);
+        super(x, y, width, height, scale);
         this.realWidth = width / 2;
         this.realHeight = height;
         this.img = new Image();
@@ -50,7 +50,7 @@ export class Bullet extends Shape {
         //     return;
         // }
 
-        ctx.drawImage(this.img, 0, 0, this.img.width, this.img.height, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
+        ctx.drawImage(this.img, 0, 0, this.img.width, this.img.height, this.x - this.width * this.scale / 2, this.y - this.height * this.scale / 2, this.width * this.scale, this.height * this.scale);
 
         // ctx.strokeRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
     }
@@ -58,7 +58,7 @@ export class Bullet extends Shape {
 
 export class EnemyBullet extends Bullet {
     constructor(x: number, y: number, width: number, scale: number = 1) {
-        super(x, y, width, width, 3);
+        super(x, y, width, width, 3, scale);
         this.speedSpan = 3 / scale;
     }
 
@@ -71,6 +71,6 @@ export class EnemyBullet extends Bullet {
         //     return;
         // }
         // ctx.drawImage(this.img, 0, 0, this.img.width, this.img.height, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
-        imgSpirit(ctx, this.img, 300, this.createTime, true, 3, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
+        imgSpirit(ctx, this.img, 300, this.createTime, true, 3, this.x - this.width * this.scale / 2, this.y - this.height * this.scale / 2, this.width * this.scale, this.height * this.scale);
     }
 }

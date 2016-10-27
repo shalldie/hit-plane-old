@@ -13,8 +13,8 @@ img.src = imgBoom;
  * @extends {Shape}
  */
 export default class Boom extends Shape {
-    constructor(x: number, y: number, width: number, height: number) {
-        super(x, y, width, height);
+    constructor(x: number, y: number, width: number, height: number, scale: number) {
+        super(x, y, width, height, scale);
         this.img = img;
         this.imgSum = 14;
         this.colourSpeed = 40;
@@ -22,7 +22,7 @@ export default class Boom extends Shape {
 
     public onPaint(ctx: CanvasRenderingContext2D): void {
         var self = this;
-        imgSpirit(ctx, this.img, this.colourSpeed, this.createTime, true, 14, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height, 1, function () {
+        imgSpirit(ctx, this.img, this.colourSpeed, this.createTime, true, 14, this.x - this.width * this.scale / 2, this.y - this.height * this.scale / 2, this.width * this.scale, this.height * this.scale, 1, function () {
             self.alive = false;
         });
     }

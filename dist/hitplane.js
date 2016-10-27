@@ -94,7 +94,7 @@
 	var utils = __webpack_require__(2);
 	var Boom_1 = __webpack_require__(3);
 	var Enemy_1 = __webpack_require__(15);
-	var Plane_1 = __webpack_require__(17);
+	var Plane_1 = __webpack_require__(18);
 	/**
 	 * 游戏逻辑类
 	 *
@@ -126,6 +126,7 @@
 	        this.height = height;
 	        this.ctx = ctx;
 	        this.scale = this.height / 1200; // 等比缩放，保证在不同分辨率下比例一致，类似rem的效果
+	        this.scale = 1;
 	    }
 	    Logic.prototype.start = function () {
 	        this.newPlane();
@@ -151,8 +152,8 @@
 	     * @memberOf Logic
 	     */
 	    Logic.prototype.newPlane = function () {
-	        this.plane = new Plane_1.default(this.width / 2, 0, 172 * this.scale, 200 * this.scale);
-	        this.plane.y = this.height - this.plane.height;
+	        this.plane = new Plane_1.default(this.width / 2, 0, 172, 200, this.scale);
+	        this.plane.y = this.height - this.plane.height * this.scale;
 	        this.plane.makeOpacity(0.5, 3000);
 	    };
 	    /**
@@ -166,7 +167,7 @@
 	        var x = this.width / 10 * ~~(Math.random() * 10 + 1);
 	        var wid = (80 + Math.random() * 80) * this.scale;
 	        var enemyType = ~~(Math.random() * 4);
-	        var enemy = new Enemy_1.default(x, 0, wid, enemyType, 100);
+	        var enemy = new Enemy_1.default(x, 0, wid, enemyType, 100, this.scale);
 	        enemy.y = -enemy.height / 2;
 	        if (enemy.x + enemy.width / 2 > this.width || enemy.x < enemy.width / 2) {
 	            this.newEnemy();
@@ -180,11 +181,11 @@
 	                clearInterval(timer);
 	                return;
 	            }
-	            self.enemyBulletList = self.enemyBulletList.concat(enemy.fire(self.scale));
+	            self.enemyBulletList = self.enemyBulletList.concat(enemy.fire());
 	        }, 800 + Math.random() * 500);
 	    };
 	    Logic.prototype.newBoom = function (x, y, width) {
-	        var boom = new Boom_1.default(x, y, width * this.scale, width * this.scale);
+	        var boom = new Boom_1.default(x, y, width, width, this.scale);
 	        this.boomList.push(boom);
 	    };
 	    /**
@@ -201,7 +202,7 @@
 	                [0, false],
 	                [1, true],
 	                [2, true]
-	            ], self.scale);
+	            ]);
 	            if (arr.length) {
 	                self.bulletList = self.bulletList.concat(arr);
 	            }
@@ -234,7 +235,7 @@
 	                    if (enemy.HP <= 0) {
 	                        enemy.HP = 0;
 	                        enemy.alive = false;
-	                        this.newBoom(enemy.x, enemy.y, enemy.width * 1.2 / this.scale);
+	                        this.newBoom(enemy.x, enemy.y, enemy.width * 1.2);
 	                    }
 	                }
 	            }
@@ -287,7 +288,7 @@
 	        for (i = 0, len = this.enemyList.length; i < len; i++) {
 	            enemy = this.enemyList[i];
 	            if (enemy.alive) {
-	                enemy.onPaint(this.ctx, this.scale);
+	                enemy.onPaint(this.ctx);
 	            }
 	        }
 	        // 爆炸效果
@@ -442,15 +443,15 @@
 	 */
 	var Boom = (function (_super) {
 	    __extends(Boom, _super);
-	    function Boom(x, y, width, height) {
-	        _super.call(this, x, y, width, height);
+	    function Boom(x, y, width, height, scale) {
+	        _super.call(this, x, y, width, height, scale);
 	        this.img = img;
 	        this.imgSum = 14;
 	        this.colourSpeed = 40;
 	    }
 	    Boom.prototype.onPaint = function (ctx) {
 	        var self = this;
-	        utils_1.imgSpirit(ctx, this.img, this.colourSpeed, this.createTime, true, 14, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height, 1, function () {
+	        utils_1.imgSpirit(ctx, this.img, this.colourSpeed, this.createTime, true, 14, this.x - this.width * this.scale / 2, this.y - this.height * this.scale / 2, this.width * this.scale, this.height * this.scale, 1, function () {
 	            self.alive = false;
 	        });
 	    };
@@ -551,8 +552,9 @@
 	     * @param {number} y
 	     * @param {number} width
 	     * @param {number} height
+	     * @param {number} scale
 	     */
-	    function Shape(x, y, width, height) {
+	    function Shape(x, y, width, height, scale) {
 	        /**
 	         * 是否 生存/可用
 	         *
@@ -592,6 +594,7 @@
 	        this.height = height;
 	        this.realWidth = width;
 	        this.realHeight = height;
+	        this.scale = scale;
 	    }
 	    /**
 	     * 持续一段时间半透明
@@ -642,7 +645,7 @@
 	var utils_1 = __webpack_require__(2);
 	var imgBase64_1 = __webpack_require__(4);
 	var Bullet_1 = __webpack_require__(16);
-	var AI_1 = __webpack_require__(18);
+	var AI_1 = __webpack_require__(17);
 	var img = new Image();
 	img.src = imgBase64_1.imgEnemy;
 	var imghp = new Image();
@@ -705,10 +708,10 @@
 	var Enemy = (function (_super) {
 	    __extends(Enemy, _super);
 	    // public 
-	    function Enemy(x, y, width, enemyType, hp) {
+	    function Enemy(x, y, width, enemyType, hp, scale) {
 	        var area = areaArr[enemyType];
 	        var height = width * area.h / area.w;
-	        _super.call(this, x, y, width, height);
+	        _super.call(this, x, y, width, height, scale);
 	        this.area = area;
 	        this.img = img;
 	        this.HP = hp;
@@ -722,37 +725,33 @@
 	    /**
 	     * 开火
 	     *
-	     * @param {number} [scale=1]
 	     * @returns {EnemyBullet[]}
 	     *
 	     * @memberOf Enemy
 	     */
-	    Enemy.prototype.fire = function (scale) {
-	        if (scale === void 0) { scale = 1; }
-	        return [new Bullet_1.EnemyBullet(this.x, this.y + this.height / 2 + 2, this.width / 2, scale)];
+	    Enemy.prototype.fire = function () {
+	        return [new Bullet_1.EnemyBullet(this.x, this.y + this.height / 2 + 2, this.width / 2, this.scale)];
 	    };
 	    /**
 	     * 绘制自身
 	     *
 	     * @param {CanvasRenderingContext2D} ctx
-	     * @param {number} [scale=1]
 	     *
 	     * @memberOf Enemy
 	     */
-	    Enemy.prototype.onPaint = function (ctx, scale) {
-	        if (scale === void 0) { scale = 1; }
+	    Enemy.prototype.onPaint = function (ctx) {
 	        // this.ai.behave(this);
 	        var timeNow = new Date();
-	        this.ai.behave(this, timeNow, scale); // ai 行为
+	        this.ai.behave(this, timeNow, this.scale); // ai 行为
 	        var opa = 1;
 	        if (this.opacity != 1 && timeNow.getTime() - this.opacityTime.getTime() < this.opacityLast) {
 	            opa = this.opacity;
 	        }
 	        // 血条
-	        utils_1.imgDrawSingle(ctx, imghp, 0, 0, imghp.width, imghp.height, this.x - this.width / 2, this.y - this.height / 2 - 20 * scale, this.width * this.HP / this.maxHP, 10 * scale);
+	        utils_1.imgDrawSingle(ctx, imghp, 0, 0, imghp.width, imghp.height, this.x - this.width * this.scale / 2, this.y - this.height * this.scale / 2 - 20 * this.scale, this.width * this.scale * this.HP / this.maxHP, 10 * this.scale);
 	        // imgDrawSingle(ctx,imghp)
 	        // 自身
-	        utils_1.imgDrawSingle(ctx, this.img, this.area.x, this.area.y, this.area.w, this.area.h, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height, opa);
+	        utils_1.imgDrawSingle(ctx, this.img, this.area.x, this.area.y, this.area.w, this.area.h, this.x - this.width * this.scale / 2, this.y - this.height * this.scale / 2, this.width * this.scale, this.height * this.scale, opa);
 	        // ctx.strokeRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
 	    };
 	    return Enemy;
@@ -787,7 +786,7 @@
 	    function Bullet(x, y, width, height, typeIndex, scale) {
 	        if (typeIndex === void 0) { typeIndex = 0; }
 	        if (scale === void 0) { scale = 1; }
-	        _super.call(this, x, y, width, height);
+	        _super.call(this, x, y, width, height, scale);
 	        this.ATK = 10;
 	        /**
 	         * 子弹飞行速度，每多少毫秒移动一个单位长度
@@ -814,7 +813,7 @@
 	        //     // console.log(+new Date);
 	        //     return;
 	        // }
-	        ctx.drawImage(this.img, 0, 0, this.img.width, this.img.height, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
+	        ctx.drawImage(this.img, 0, 0, this.img.width, this.img.height, this.x - this.width * this.scale / 2, this.y - this.height * this.scale / 2, this.width * this.scale, this.height * this.scale);
 	        // ctx.strokeRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
 	    };
 	    return Bullet;
@@ -824,7 +823,7 @@
 	    __extends(EnemyBullet, _super);
 	    function EnemyBullet(x, y, width, scale) {
 	        if (scale === void 0) { scale = 1; }
-	        _super.call(this, x, y, width, width, 3);
+	        _super.call(this, x, y, width, width, 3, scale);
 	        this.speedSpan = 3 / scale;
 	    }
 	    EnemyBullet.prototype.onPaint = function (ctx) {
@@ -836,7 +835,7 @@
 	        //     return;
 	        // }
 	        // ctx.drawImage(this.img, 0, 0, this.img.width, this.img.height, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
-	        utils_1.imgSpirit(ctx, this.img, 300, this.createTime, true, 3, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
+	        utils_1.imgSpirit(ctx, this.img, 300, this.createTime, true, 3, this.x - this.width * this.scale / 2, this.y - this.height * this.scale / 2, this.width * this.scale, this.height * this.scale);
 	    };
 	    return EnemyBullet;
 	}(Bullet));
@@ -845,100 +844,6 @@
 
 /***/ },
 /* 17 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var imgBase64_1 = __webpack_require__(4);
-	var Shape_1 = __webpack_require__(14);
-	var utils_1 = __webpack_require__(2);
-	var Bullet_1 = __webpack_require__(16);
-	var img = new Image();
-	img.src = imgBase64_1.imgPlane;
-	var imghp = new Image();
-	imghp.src = imgBase64_1.imgHP;
-	/**
-	 * 飞机，打飞机~ 大哥哥这是什么？呀！好长！诶？！好滑哦(๑• . •๑)！阿呜～
-	 *
-	 * @export
-	 * @class Plane
-	 * @extends {Shape}
-	 */
-	var Plane = (function (_super) {
-	    __extends(Plane, _super);
-	    function Plane(x, y, width, height) {
-	        _super.call(this, x, y, width, height);
-	        this.fireSpan = 110;
-	        this.lastFireTime = new Date();
-	        this.img = img;
-	        this.imgSum = 11;
-	        this.colourSpeed = 50;
-	        this.realWidth = width * 0.5;
-	        this.realHeight = height * 0.5;
-	        this.maxHP = 100;
-	        this.HP = this.maxHP;
-	    }
-	    Plane.prototype.fire = function (option, scale) {
-	        // 发射间隔
-	        if (+new Date - this.lastFireTime.getTime() < this.fireSpan) {
-	            return [];
-	        }
-	        this.lastFireTime = new Date();
-	        var arr = [];
-	        var i = 0, len = option.length;
-	        for (; i < len; i++) {
-	            arr = arr.concat(this.fireType(option[i][0], option[i][1], scale));
-	        }
-	        return arr;
-	    };
-	    Plane.prototype.fireType = function (typeIndex, double, scale) {
-	        if (double === void 0) { double = false; }
-	        var offsetArr = [8 * scale, 25 * scale, 50 * scale]; // 偏移量
-	        var arr = [];
-	        if (double) {
-	            arr.push(new Bullet_1.Bullet(this.x + offsetArr[typeIndex], this.y - this.height / 2, 96 * scale, 96 * scale, typeIndex, scale));
-	            arr.push(new Bullet_1.Bullet(this.x - offsetArr[typeIndex], this.y - this.height / 2, 96 * scale, 96 * scale, typeIndex, scale));
-	        }
-	        else {
-	            arr.push(new Bullet_1.Bullet(this.x, this.y - this.height / 2, 96 * scale, 96 * scale, typeIndex, scale));
-	        }
-	        return arr;
-	    };
-	    // private drawBullets(ctx: CanvasRenderingContext2D): void {
-	    //     this.bullets = this.bullets.filter(n => n.alive);
-	    //     for (let i = 0, len = this.bullets.length; i < len; i++) {
-	    //         this.bullets[i].onPaint(ctx);
-	    //     }
-	    // }
-	    Plane.prototype.onPaint = function (ctx) {
-	        if (!this.alive)
-	            return;
-	        var opa = 1;
-	        // 半透明状态
-	        if (this.opacity != 1 && new Date().getTime() - this.opacityTime.getTime() < this.opacityLast) {
-	            opa = this.opacity;
-	        }
-	        else if (this.opacity != 1) {
-	            opa = 1;
-	        }
-	        utils_1.imgSpirit(ctx, this.img, this.colourSpeed, this.createTime, this.ifImgX, this.imgSum, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height, opa);
-	        // 绘制 HP
-	        // imgDrawSingle(ctx, imghp, 0, 0, imghp.width, imghp.height, this.x - this.width / 2, this.y - this.height / 2 - 20, this.width * this.HP / this.maxHP, 10, 1);
-	        // ctx.strokeRect(this.x - this.realWidth / 2, this.y - this.realHeight / 2, this.realWidth, this.realHeight);
-	        // this.drawBullets(ctx);
-	    };
-	    return Plane;
-	}(Shape_1.default));
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = Plane;
-
-
-/***/ },
-/* 18 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -971,6 +876,100 @@
 	}());
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = AI;
+
+
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var imgBase64_1 = __webpack_require__(4);
+	var Shape_1 = __webpack_require__(14);
+	var utils_1 = __webpack_require__(2);
+	var Bullet_1 = __webpack_require__(16);
+	var img = new Image();
+	img.src = imgBase64_1.imgPlane;
+	var imghp = new Image();
+	imghp.src = imgBase64_1.imgHP;
+	/**
+	 * 飞机，打飞机~ 大哥哥这是什么？呀！好长！诶？！好滑哦(๑• . •๑)！阿呜～
+	 *
+	 * @export
+	 * @class Plane
+	 * @extends {Shape}
+	 */
+	var Plane = (function (_super) {
+	    __extends(Plane, _super);
+	    function Plane(x, y, width, height, scale) {
+	        _super.call(this, x, y, width, height, scale);
+	        this.fireSpan = 110;
+	        this.lastFireTime = new Date();
+	        this.img = img;
+	        this.imgSum = 11;
+	        this.colourSpeed = 50;
+	        this.realWidth = width * 0.5;
+	        this.realHeight = height * 0.5;
+	        this.maxHP = 100;
+	        this.HP = this.maxHP;
+	    }
+	    Plane.prototype.fire = function (option) {
+	        // 发射间隔
+	        if (+new Date - this.lastFireTime.getTime() < this.fireSpan) {
+	            return [];
+	        }
+	        this.lastFireTime = new Date();
+	        var arr = [];
+	        var i = 0, len = option.length;
+	        for (; i < len; i++) {
+	            arr = arr.concat(this.fireType(option[i][0], option[i][1]));
+	        }
+	        return arr;
+	    };
+	    Plane.prototype.fireType = function (typeIndex, double) {
+	        if (double === void 0) { double = false; }
+	        var offsetArr = [8, 25, 50]; // 偏移量
+	        var arr = [];
+	        if (double) {
+	            arr.push(new Bullet_1.Bullet(this.x + offsetArr[typeIndex], this.y - this.height / 2, 96, 96, typeIndex, this.scale));
+	            arr.push(new Bullet_1.Bullet(this.x - offsetArr[typeIndex], this.y - this.height / 2, 96, 96, typeIndex, this.scale));
+	        }
+	        else {
+	            arr.push(new Bullet_1.Bullet(this.x, this.y - this.height / 2, 96, 96, typeIndex, this.scale));
+	        }
+	        return arr;
+	    };
+	    // private drawBullets(ctx: CanvasRenderingContext2D): void {
+	    //     this.bullets = this.bullets.filter(n => n.alive);
+	    //     for (let i = 0, len = this.bullets.length; i < len; i++) {
+	    //         this.bullets[i].onPaint(ctx);
+	    //     }
+	    // }
+	    Plane.prototype.onPaint = function (ctx) {
+	        if (!this.alive)
+	            return;
+	        var opa = 1;
+	        // 半透明状态
+	        if (this.opacity != 1 && new Date().getTime() - this.opacityTime.getTime() < this.opacityLast) {
+	            opa = this.opacity;
+	        }
+	        else if (this.opacity != 1) {
+	            opa = 1;
+	        }
+	        utils_1.imgSpirit(ctx, this.img, this.colourSpeed, this.createTime, this.ifImgX, this.imgSum, this.x - this.width * this.scale / 2, this.y - this.height * this.scale / 2, this.width * this.scale, this.height * this.scale, opa);
+	        // 绘制 HP
+	        // imgDrawSingle(ctx, imghp, 0, 0, imghp.width, imghp.height, this.x - this.width / 2, this.y - this.height / 2 - 20, this.width * this.HP / this.maxHP, 10, 1);
+	        // ctx.strokeRect(this.x - this.realWidth / 2, this.y - this.realHeight / 2, this.realWidth, this.realHeight);
+	        // this.drawBullets(ctx);
+	    };
+	    return Plane;
+	}(Shape_1.default));
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = Plane;
 
 
 /***/ }

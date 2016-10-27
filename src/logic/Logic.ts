@@ -57,6 +57,7 @@ export default class Logic {
         this.height = height;
         this.ctx = ctx;
         this.scale = this.height / 1200; // 等比缩放，保证在不同分辨率下比例一致，类似rem的效果
+        this.scale = 1;
     }
 
     public start(): void {
@@ -86,8 +87,8 @@ export default class Logic {
      * @memberOf Logic
      */
     private newPlane(): void {
-        this.plane = new Plane(this.width / 2, 0, 172 * this.scale, 200 * this.scale);
-        this.plane.y = this.height - this.plane.height;
+        this.plane = new Plane(this.width / 2, 0, 172, 200, this.scale);
+        this.plane.y = this.height - this.plane.height * this.scale;
         this.plane.makeOpacity(0.5, 3000);
     }
 
@@ -103,7 +104,7 @@ export default class Logic {
         let wid = (80 + Math.random() * 80) * this.scale;
         let enemyType = ~~(Math.random() * 4);
 
-        let enemy: Enemy = new Enemy(x, 0, wid, enemyType, 100);
+        let enemy: Enemy = new Enemy(x, 0, wid, enemyType, 100, this.scale);
         enemy.y = -enemy.height / 2;
         if (enemy.x + enemy.width / 2 > this.width || enemy.x < enemy.width / 2) {
             this.newEnemy();
@@ -118,12 +119,12 @@ export default class Logic {
                 clearInterval(timer);
                 return;
             }
-            self.enemyBulletList = self.enemyBulletList.concat(enemy.fire(self.scale));
+            self.enemyBulletList = self.enemyBulletList.concat(enemy.fire());
         }, 800 + Math.random() * 500);
     }
 
     private newBoom(x: number, y: number, width: number): void {
-        let boom = new Boom(x, y, width * this.scale, width * this.scale);
+        let boom = new Boom(x, y, width, width, this.scale);
         this.boomList.push(boom);
     }
 
@@ -141,7 +142,7 @@ export default class Logic {
                 [0, false],
                 [1, true],
                 [2, true]
-            ], self.scale);
+            ]);
             if (arr.length) {
                 self.bulletList = self.bulletList.concat(arr);
             }
@@ -176,7 +177,7 @@ export default class Logic {
                     if (enemy.HP <= 0) {  // 被打挂了
                         enemy.HP = 0;
                         enemy.alive = false;
-                        this.newBoom(enemy.x, enemy.y, enemy.width * 1.2 / this.scale);
+                        this.newBoom(enemy.x, enemy.y, enemy.width * 1.2);
                     }
                 }
             }
@@ -238,7 +239,7 @@ export default class Logic {
         for (i = 0, len = this.enemyList.length; i < len; i++) {
             enemy = this.enemyList[i];
             if (enemy.alive) {
-                enemy.onPaint(this.ctx, this.scale);
+                enemy.onPaint(this.ctx);
             }
         }
 
