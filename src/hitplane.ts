@@ -47,5 +47,7 @@ else {
             x: touch.clientX,
             y: touch.clientY
         };
+        ex.preventDefault();
+        ex.cancelBubble = true;
     });
 }
