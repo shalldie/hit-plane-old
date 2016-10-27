@@ -101,7 +101,7 @@ export default class Logic {
      */
     private newEnemy(): void {
         let x = this.width / 10 * ~~(Math.random() * 10 + 1);
-        let wid = (80 + Math.random() * 80) * this.scale;
+        let wid = 80 + Math.random() * 80;
         let enemyType = ~~(Math.random() * 4);
 
         let enemy: Enemy = new Enemy(x, 0, wid, enemyType, 100, this.scale);

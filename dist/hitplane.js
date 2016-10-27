@@ -167,7 +167,7 @@
 	     */
 	    Logic.prototype.newEnemy = function () {
 	        var x = this.width / 10 * ~~(Math.random() * 10 + 1);
-	        var wid = (80 + Math.random() * 80) * this.scale;
+	        var wid = 80 + Math.random() * 80;
 	        var enemyType = ~~(Math.random() * 4);
 	        var enemy = new Enemy_1.default(x, 0, wid, enemyType, 100, this.scale);
 	        enemy.y = -enemy.height * this.scale / 2;
