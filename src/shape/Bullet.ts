@@ -4,7 +4,24 @@ import { imgBulletArr } from '../img/imgBase64';
 
 import { imgSpirit } from '../utils/utils';  // 精灵渲染辅助方法
 
+let imgEleBulletArr = imgBulletArr.map(n => {
+    let img = new Image();
+    img.src = n;
+    while (!img.width); // 首次加载模块，阻塞ui等待加载完全
+    return img;
+});
+
 // import config from '../config';
+// let cacheArr: [boolean, HTMLCanvasElement, CanvasRenderingContext2D][];
+let cacheArr = imgEleBulletArr.map(() => {
+    let cacheCanvas = document.createElement('canvas');  // 离屏 canvas
+    let cacheCtx = cacheCanvas.getContext('2d');
+    return [
+        false, // 是否已缓存
+        cacheCanvas, // 离屏画布
+        cacheCtx // 画布对象
+    ];
+});
 
 /**
  * 子弹
@@ -19,12 +36,29 @@ export class Bullet extends Shape {
         super(x, y, width, height, scale);
         this.realWidth = width / 2;
         this.realHeight = height;
-        this.img = new Image();
-        this.img.src = imgBulletArr[typeIndex];
+        this.img = imgEleBulletArr[typeIndex];
         this.baseY = y;
         this.speedSpan /= scale;
         this.speedSpan += 0.12 * typeIndex;
+
+        let cache = cacheArr[typeIndex];
+        if (!cache[0]) { // 如果未缓存
+            cache[0] = true;
+            let cacheCanvas = <HTMLCanvasElement>cache[1];
+            cacheCanvas.width = this.width * scale;
+            cacheCanvas.height = this.height * scale;
+
+            let cacheCtx = <CanvasRenderingContext2D>cache[2];
+
+            // cacheCanvas.width
+            cacheCtx.drawImage(this.img, 0, 0, this.img.width, this.img.height, 0, 0, cacheCanvas.width, cacheCanvas.height);
+        }
+
+        this.cacheCanvas = <HTMLCanvasElement>cache[1];
+        // this.cacheCanvas = cache && <HTMLCanvasElement>cache[1];
     }
+
+    private cacheCanvas: HTMLCanvasElement;
 
     public ATK: number = 10;
 
@@ -43,6 +77,13 @@ export class Bullet extends Shape {
         let timeSpan = new Date().getTime() - this.createTime.getTime();
         this.y = this.baseY - ~~(timeSpan / this.speedSpan);
 
+        // if (!this.img.width) { // 图片未加载完全
+        //     return;
+        // }
+
+        // if(hasCached)
+
+
         // if (this.y < -this.height) {
         //     this.alive = false;
         //     // console.log(`${+new Date}`);
@@ -50,7 +91,16 @@ export class Bullet extends Shape {
         //     return;
         // }
 
-        ctx.drawImage(this.img, 0, 0, this.img.width, this.img.height, this.x - this.width * this.scale / 2, this.y - this.height * this.scale / 2, this.width * this.scale, this.height * this.scale);
+        // ctx.drawImage(this.img, 0, 0, this.img.width, this.img.height, this.x - this.width * this.scale / 2, this.y - this.height * this.scale / 2, this.width * this.scale, this.height * this.scale);
+
+        ctx.drawImage(
+            this.cacheCanvas, 0, 0,
+            this.cacheCanvas.width,
+            this.cacheCanvas.height,
+            this.x - this.cacheCanvas.width / 2,
+            this.y - this.cacheCanvas.height / 2,
+            this.cacheCanvas.width,
+            this.cacheCanvas.height);
 
         // ctx.strokeRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
     }
