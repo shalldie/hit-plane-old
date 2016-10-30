@@ -204,10 +204,7 @@
 	                [0, false],
 	                [1, true],
 	                [2, true]
-	            ]);
-	            if (arr.length) {
-	                self.bulletList = self.bulletList.concat(arr);
-	            }
+	            ], self.bulletList);
 	            self.checkIntersect(); // 碰撞检测
 	            self.onGC(); // 垃圾回收
 	            self.onPaint(); // 绘制
@@ -815,12 +812,13 @@
 	         * @memberOf Bullet
 	         */
 	        this.speedSpan = 0.34;
-	        this.realWidth = width / 2;
-	        this.realHeight = height;
-	        this.img = imgEleBulletArr[typeIndex];
-	        this.baseY = y;
-	        this.speedSpan /= scale;
-	        this.speedSpan += 0.12 * typeIndex;
+	        // this.realWidth = width / 2;
+	        // this.realHeight = height;
+	        // this.img = imgEleBulletArr[typeIndex];
+	        // this.baseY = y;
+	        // this.speedSpan /= scale;
+	        // this.speedSpan += 0.12 * typeIndex;
+	        this.resetBullet(x, y, width, height, typeIndex, scale);
 	        var cache = cacheArr[typeIndex];
 	        if (!cache[0]) {
 	            cache[0] = true;
@@ -834,6 +832,18 @@
 	        this.cacheCanvas = cache[1];
 	        // this.cacheCanvas = cache && <HTMLCanvasElement>cache[1];
 	    }
+	    Bullet.prototype.resetBullet = function (x, y, width, height, typeIndex, scale) {
+	        if (typeIndex === void 0) { typeIndex = 0; }
+	        if (scale === void 0) { scale = 1; }
+	        this.x = x;
+	        this.y = y;
+	        this.width = width;
+	        this.height = height;
+	        this.img = imgEleBulletArr[typeIndex];
+	        this.baseY = y;
+	        this.speedSpan = 0.34 / scale;
+	        this.speedSpan = 0.34 + 0.12 * typeIndex;
+	    };
 	    Bullet.prototype.onPaint = function (ctx) {
 	        var timeSpan = new Date().getTime() - this.createTime.getTime();
 	        this.y = this.baseY - ~~(timeSpan / this.speedSpan);
@@ -952,10 +962,10 @@
 	        this.maxHP = 100;
 	        this.HP = this.maxHP;
 	    }
-	    Plane.prototype.fire = function (option) {
+	    Plane.prototype.fire = function (option, bulletList) {
 	        // 发射间隔
 	        if (+new Date - this.lastFireTime.getTime() < this.fireSpan) {
-	            return [];
+	            return;
 	        }
 	        this.lastFireTime = new Date();
 	        var arr = [];
@@ -963,7 +973,6 @@
 	        for (; i < len; i++) {
 	            arr = arr.concat(this.fireType(option[i][0], option[i][1]));
 	        }
-	        return arr;
 	    };
 	    Plane.prototype.fireType = function (typeIndex, double) {
 	        if (double === void 0) { double = false; }

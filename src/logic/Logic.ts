@@ -142,10 +142,7 @@ export default class Logic {
                 [0, false],
                 [1, true],
                 [2, true]
-            ]);
-            if (arr.length) {
-                self.bulletList = self.bulletList.concat(arr);
-            }
+            ], self.bulletList);
 
             self.checkIntersect(); // 碰撞检测
             self.onGC();  // 垃圾回收

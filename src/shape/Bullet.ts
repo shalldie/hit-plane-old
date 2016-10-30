@@ -34,12 +34,13 @@ export class Bullet extends Shape {
 
     constructor(x: number, y: number, width: number, height: number, typeIndex: number = 0, scale: number = 1) {
         super(x, y, width, height, scale);
-        this.realWidth = width / 2;
-        this.realHeight = height;
-        this.img = imgEleBulletArr[typeIndex];
-        this.baseY = y;
-        this.speedSpan /= scale;
-        this.speedSpan += 0.12 * typeIndex;
+        // this.realWidth = width / 2;
+        // this.realHeight = height;
+        // this.img = imgEleBulletArr[typeIndex];
+        // this.baseY = y;
+        // this.speedSpan /= scale;
+        // this.speedSpan += 0.12 * typeIndex;
+        this.resetBullet(x, y, width, height, typeIndex, scale);
 
         let cache = cacheArr[typeIndex];
         if (!cache[0]) { // 如果未缓存
@@ -56,6 +57,17 @@ export class Bullet extends Shape {
 
         this.cacheCanvas = <HTMLCanvasElement>cache[1];
         // this.cacheCanvas = cache && <HTMLCanvasElement>cache[1];
+    }
+
+    public resetBullet(x: number, y: number, width: number, height: number, typeIndex: number = 0, scale: number = 1) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.img = imgEleBulletArr[typeIndex];
+        this.baseY = y;
+        this.speedSpan = 0.34 / scale;
+        this.speedSpan = 0.34 + 0.12 * typeIndex;
     }
 
     private cacheCanvas: HTMLCanvasElement;

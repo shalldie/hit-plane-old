@@ -43,10 +43,10 @@ export default class Plane extends Shape {
         this.HP = this.maxHP;
     }
 
-    public fire(option: [number, boolean][]): Bullet[] {
+    public fire(option: [number, boolean][], bulletList: Bullet[]): void {
         // 发射间隔
         if (+new Date - this.lastFireTime.getTime() < this.fireSpan) {
-            return [];
+            return;
         }
 
         this.lastFireTime = new Date();
@@ -56,7 +56,6 @@ export default class Plane extends Shape {
         for (; i < len; i++) {
             arr = arr.concat(this.fireType(option[i][0], option[i][1]));
         }
-        return arr;
     }
 
     private fireType(typeIndex: number, double: boolean = false): Bullet[] {
