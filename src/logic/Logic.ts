@@ -113,13 +113,14 @@ export default class Logic {
         let wid = 80 + Math.random() * 80;
         let enemyType = ~~(Math.random() * 4);
 
-        let enemy: Enemy = new Enemy(x, 0, wid, enemyType, 100, this.scale);
-        enemy.y = -enemy.height * this.scale / 2;
+        let enemy: Enemy = new Enemy(x, -x / 2, wid, enemyType, 100, this.scale);
+
         if (enemy.x + enemy.width / 2 > this.width || enemy.x < enemy.width / 2) {
             this.newEnemy();
             return;
         }
         enemy.speed *= Math.random() + 1;
+
         this.enemyList.push(enemy);
 
         let self = this;
