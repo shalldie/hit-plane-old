@@ -90,6 +90,15 @@ export default class Logic {
         this.plane = new Plane(this.width / 2, 0, 172, 200, this.scale);
         this.plane.y = this.height - this.plane.height * this.scale;
         this.plane.makeOpacity(0.5, 3000);
+        setInterval(function () {
+            this.plane.fire([
+                [0, 0],
+                [1, 1],
+                [1, 2],
+                [2, 1],
+                [2, 2]
+            ], this.bulletList);
+        }.bind(this), 110);
     }
 
     /**
@@ -138,12 +147,6 @@ export default class Logic {
     private keepRefresh() {
         let self = this;
         utils.makeRequestAnimationFrame(function () {
-            var arr = self.plane.fire([
-                [0, false],
-                [1, true],
-                [2, true]
-            ], self.bulletList);
-
             self.checkIntersect(); // 碰撞检测
             self.onGC();  // 垃圾回收
             self.onPaint();  // 绘制

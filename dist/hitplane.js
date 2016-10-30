@@ -157,6 +157,15 @@
 	        this.plane = new Plane_1.default(this.width / 2, 0, 172, 200, this.scale);
 	        this.plane.y = this.height - this.plane.height * this.scale;
 	        this.plane.makeOpacity(0.5, 3000);
+	        setInterval(function () {
+	            this.plane.fire([
+	                [0, 0],
+	                [1, 1],
+	                [1, 2],
+	                [2, 1],
+	                [2, 2]
+	            ], this.bulletList);
+	        }.bind(this), 110);
 	    };
 	    /**
 	     * 新敌军
@@ -200,11 +209,6 @@
 	    Logic.prototype.keepRefresh = function () {
 	        var self = this;
 	        utils.makeRequestAnimationFrame(function () {
-	            var arr = self.plane.fire([
-	                [0, false],
-	                [1, true],
-	                [2, true]
-	            ], self.bulletList);
 	            self.checkIntersect(); // 碰撞检测
 	            self.onGC(); // 垃圾回收
 	            self.onPaint(); // 绘制
@@ -952,8 +956,6 @@
 	    __extends(Plane, _super);
 	    function Plane(x, y, width, height, scale) {
 	        _super.call(this, x, y, width, height, scale);
-	        this.fireSpan = 110;
-	        this.lastFireTime = new Date();
 	        this.img = img;
 	        this.imgSum = 11;
 	        this.colourSpeed = 50;
@@ -964,29 +966,69 @@
 	    }
 	    Plane.prototype.fire = function (option, bulletList) {
 	        // 发射间隔
-	        if (+new Date - this.lastFireTime.getTime() < this.fireSpan) {
-	            return;
-	        }
-	        this.lastFireTime = new Date();
-	        var arr = [];
-	        var i = 0, len = option.length;
+	        // if (+new Date - this.lastFireTime.getTime() < this.fireSpan) {
+	        //     return;
+	        // }
+	        // this.lastFireTime = new Date();
+	        var sumNow = 0;
+	        var sumNum = option.length;
+	        var i = 0;
+	        var len = bulletList.length;
+	        var bullet;
 	        for (; i < len; i++) {
-	            arr = arr.concat(this.fireType(option[i][0], option[i][1]));
+	            if (sumNow >= sumNum)
+	                break; // 如果够了就停下来
+	            bullet = bulletList[i];
+	            if (!bullet.alive) {
+	                this.resetBullet(bullet, option[sumNow][1]);
+	                sumNow++;
+	            }
 	        }
+	        while (sumNow < sumNum) {
+	            bulletList.push(this.resetBullet(null, option[sumNow][0], option[sumNow][1]));
+	            sumNow++;
+	        }
+	        // let arr: Bullet[] = [];
+	        // let i = 0,
+	        //     len = option.length;
+	        // for (; i < len; i++) {
+	        //     arr = arr.concat(this.fireType(option[i][0], option[i][1]));
+	        // }
 	    };
-	    Plane.prototype.fireType = function (typeIndex, double) {
-	        if (double === void 0) { double = false; }
-	        var offsetArr = [8, 25, 50]; // 偏移量
-	        var arr = [];
-	        if (double) {
-	            arr.push(new Bullet_1.Bullet(this.x + offsetArr[typeIndex], this.y - this.height / 2, 96, 96, typeIndex, this.scale));
-	            arr.push(new Bullet_1.Bullet(this.x - offsetArr[typeIndex], this.y - this.height / 2, 96, 96, typeIndex, this.scale));
+	    /**
+	     * 重置子弹类型
+	     *
+	     * @private
+	     * @param {Bullet} bullet
+	     * @param {number} typeIndex
+	     * @param {number} typeMark
+	     * @returns {Bullet}
+	     *
+	     * @memberOf Plane
+	     */
+	    Plane.prototype.resetBullet = function (bullet, typeIndex, typeMark) {
+	        if (typeMark === void 0) { typeMark = 0; }
+	        var offsetArr = [8, 25, 50];
+	        var x = this.x + [0, -1, 1][typeMark] * offsetArr[typeIndex];
+	        if (bullet) {
+	            bullet.resetBullet(x, this.y - this.height / 2, 96, 96, typeIndex, this.scale);
 	        }
 	        else {
-	            arr.push(new Bullet_1.Bullet(this.x, this.y - this.height / 2, 96, 96, typeIndex, this.scale));
+	            bullet = new Bullet_1.Bullet(x, this.y - this.height / 2, 96, 96, typeIndex, this.scale);
 	        }
-	        return arr;
+	        return bullet;
 	    };
+	    // private fireType(typeIndex: number, double: boolean = false): Bullet[] {
+	    //     let offsetArr = [8, 25, 50]; // 偏移量
+	    //     let arr: Bullet[] = [];
+	    //     if (double) {
+	    //         arr.push(new Bullet(this.x + offsetArr[typeIndex], this.y - this.height / 2, 96, 96, typeIndex, this.scale));
+	    //         arr.push(new Bullet(this.x - offsetArr[typeIndex], this.y - this.height / 2, 96, 96, typeIndex, this.scale));
+	    //     } else {
+	    //         arr.push(new Bullet(this.x, this.y - this.height / 2, 96, 96, typeIndex, this.scale));
+	    //     }
+	    //     return arr;
+	    // }
 	    // private drawBullets(ctx: CanvasRenderingContext2D): void {
 	    //     this.bullets = this.bullets.filter(n => n.alive);
 	    //     for (let i = 0, len = this.bullets.length; i < len; i++) {
