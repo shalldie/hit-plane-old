@@ -134,7 +134,7 @@
 	        this.newPlane();
 	        setInterval(function () {
 	            this.newEnemy();
-	        }.bind(this), 2000);
+	        }.bind(this), 1000);
 	        this.newEnemy();
 	        this.keepRefresh();
 	    };
