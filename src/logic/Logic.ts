@@ -64,7 +64,7 @@ export default class Logic {
         this.newPlane();
         setInterval(function () {
             this.newEnemy();
-        }.bind(this), 1000);
+        }.bind(this), 2000);
         this.newEnemy();
         this.keepRefresh();
     }
