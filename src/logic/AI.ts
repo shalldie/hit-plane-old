@@ -23,6 +23,6 @@ export default class AI {
     }
 
     private getShakeBehave(enemy: Enemy, timeNow: Date): void {
- 
+
     }
 }
