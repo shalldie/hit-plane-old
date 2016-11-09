@@ -101,6 +101,11 @@ export default class Enemy extends Shape {
         this.speed = 0.1;
     }
 
+    public resetY(y: number): void {
+        this.baseY = y;
+        this.y = y;
+    }
+
     /**
      * 开火
      * 

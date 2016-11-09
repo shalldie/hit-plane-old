@@ -119,6 +119,8 @@ export default class Logic {
             this.newEnemy();
             return;
         }
+
+        enemy.resetY(-enemy.height/2);
         enemy.speed *= Math.random() + 1;
 
         this.enemyList.push(enemy);
