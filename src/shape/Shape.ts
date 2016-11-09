@@ -64,28 +64,60 @@ abstract class Shape {
      * 
      * @type {number}
      */
-    public x: number;
+    public _x: number;
+
+    public get x() {
+        return this._x;
+    }
+
+    public set x(num: number) {
+        this._x = ~~num;
+    }
 
     /**
      * y 坐标
      * 
      * @type {number}
      */
-    public y: number;
+    private _y: number;
+
+    public get y() {
+        return this._y;
+    }
+
+    public set y(num: number) {
+        this._y = ~~num;
+    }
 
     /**
      * 宽度
      * 
      * @type {number}
      */
-    public width: number;
+    private _width: number;
+
+    public get width() {
+        return this._width;
+    }
+
+    public set width(num: number) {
+        this._width = ~~num;
+    }
 
     /**
      * 高度
      * 
      * @type {number}
      */
-    public height: number;
+    private _height: number;
+
+    public get height() {
+        return this._height;
+    }
+
+    public set height(num: number) {
+        this._height = ~~num;
+    }
 
     /**
      * 用于碰撞检测的宽度
@@ -93,7 +125,15 @@ abstract class Shape {
      * @type {number}
      * @memberOf Shape
      */
-    public realWidth: number;
+    private _realWidth: number;
+
+    public get realWidth() {
+        return this._realWidth;
+    }
+
+    public set realWidth(num: number) {
+        this._realWidth = ~~num;
+    }
 
     /**
      * 用于碰撞检测的高度
@@ -101,7 +141,15 @@ abstract class Shape {
      * @type {number}
      * @memberOf Shape
      */
-    public realHeight: number;
+    private _realHeight: number;
+
+    public get realHeight() {
+        return this._realHeight;
+    }
+
+    public set realHeight(num: number) {
+        this._realHeight = ~~num;
+    }
 
     /**
      * 绘制时候的倍数，用于自适应

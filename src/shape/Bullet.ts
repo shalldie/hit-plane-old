@@ -46,8 +46,8 @@ export class Bullet extends Shape {
         if (!cache[0]) { // 如果未缓存
             cache[0] = true;
             let cacheCanvas = <HTMLCanvasElement>cache[1];
-            cacheCanvas.width = this.width * scale;
-            cacheCanvas.height = this.height * scale;
+            cacheCanvas.width = this.realWidth;
+            cacheCanvas.height = this.realHeight;
 
             let cacheCtx = <CanvasRenderingContext2D>cache[2];
 
@@ -68,7 +68,12 @@ export class Bullet extends Shape {
         this.baseY = y;
         this.speedSpan = 0.34 / scale;
         this.speedSpan = (0.34 + 0.12 * typeIndex) / scale;
+        this.typeIndex = typeIndex;
+        this.alive = true;
+        this.createTime = new Date();
     }
+
+    public typeIndex: number = 0;
 
     private cacheCanvas: HTMLCanvasElement;
 
@@ -105,14 +110,18 @@ export class Bullet extends Shape {
 
         // ctx.drawImage(this.img, 0, 0, this.img.width, this.img.height, this.x - this.width * this.scale / 2, this.y - this.height * this.scale / 2, this.width * this.scale, this.height * this.scale);
 
+        // ctx.drawImage(
+        //     this.cacheCanvas, 0, 0,
+        //     this.cacheCanvas.width,
+        //     this.cacheCanvas.height,
+        //     this.x - this.cacheCanvas.width / 2,
+        //     this.y - this.cacheCanvas.height / 2,
+        //     this.cacheCanvas.width,
+        //     this.cacheCanvas.height);
+
         ctx.drawImage(
-            this.cacheCanvas, 0, 0,
-            this.cacheCanvas.width,
-            this.cacheCanvas.height,
-            this.x - this.cacheCanvas.width / 2,
-            this.y - this.cacheCanvas.height / 2,
-            this.cacheCanvas.width,
-            this.cacheCanvas.height);
+            this.cacheCanvas, this.x - this.realWidth / 2, this.y - this.realHeight / 2
+        );
 
         // ctx.strokeRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
     }

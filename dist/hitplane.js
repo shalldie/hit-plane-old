@@ -135,7 +135,7 @@
 	        this.newPlane();
 	        setInterval(function () {
 	            this.newEnemy();
-	            console.log(that.bulletList.length);
+	            // console.log(that.bulletList.length);
 	        }.bind(this), 1500);
 	        this.newEnemy();
 	        this.keepRefresh();
@@ -211,19 +211,19 @@
 	    Logic.prototype.keepRefresh = function () {
 	        var self = this;
 	        utils.makeRequestAnimationFrame(function () {
-	            self.checkIntersect(); // 碰撞检测
+	            self.checkIntersectAndOut(); // 碰撞检测和出界
 	            self.onGC(); // 垃圾回收
 	            self.onPaint(); // 绘制
-	        });
+	        }, null);
 	    };
 	    /**
-	     * 碰撞检测，并判断有效性
+	     * 碰撞检测，出界，并判断有效性
 	     *
 	     * @private
 	     *
 	     * @memberOf Logic
 	     */
-	    Logic.prototype.checkIntersect = function () {
+	    Logic.prototype.checkIntersectAndOut = function () {
 	        var i = 0, x = 0, y = 0, len = 0, len2 = 0;
 	        var enemy;
 	        var bullet;
@@ -233,7 +233,10 @@
 	            enemy = this.enemyList[x];
 	            for (y = 0, len2 = this.bulletList.length; y < len2; y++) {
 	                bullet = this.bulletList[y];
-	                if (enemy.alive && utils.ifIntersect(enemy, bullet)) {
+	                if (bullet.alive && bullet.y + bullet.height < 0) {
+	                    bullet.alive = false;
+	                }
+	                if (bullet.alive && enemy.alive && utils.ifIntersect(enemy, bullet)) {
 	                    bullet.alive = false;
 	                    enemy.HP -= bullet.ATK; // 扣除生命值
 	                    enemy.makeOpacity(0.5, 10);
@@ -250,7 +253,8 @@
 	            enemyBullet = this.enemyBulletList[i];
 	            if (this.plane.alive && utils.ifIntersect(this.plane, enemyBullet)) {
 	                // this.plane.alive = false;
-	                this.plane.makeOpacity(0.5, 10);
+	                enemyBullet.alive = false;
+	                this.plane.makeOpacity(0.5, 2000);
 	            }
 	        }
 	    };
@@ -263,7 +267,7 @@
 	     */
 	    Logic.prototype.onGC = function () {
 	        var _this = this;
-	        this.bulletList = this.bulletList.filter(function (n) { return n.alive && n.y + n.height > 0; });
+	        // this.bulletList = this.bulletList.filter(n => n.alive && n.y + n.height > 0);
 	        this.enemyBulletList = this.enemyBulletList.filter(function (n) { return n.alive && n.y - n.height < _this.height; });
 	        this.boomList = this.boomList.filter(function (n) { return n.alive; });
 	        this.enemyList = this.enemyList.filter(function (n) { return n.alive && n.y < n.height + _this.height; });
@@ -309,12 +313,6 @@
 	    return Logic;
 	}());
 	Object.defineProperty(exports, "__esModule", { value: true });
-	/**
-	 * 游戏逻辑类
-	 *
-	 * @export
-	 * @class Logic
-	 */
 	exports.default = Logic;
 
 
@@ -401,6 +399,43 @@
 	}
 	exports.imgDrawSingle = imgDrawSingle;
 	/**
+	 * 绘制单一图片
+	 *
+	 * @export
+	 * @param {CanvasRenderingContext2D} ctx 画布对象
+	 * @param {HTMLCanvasElement} canvas 画布
+	 * @param {number} [fX=0] 原始图片x轴偏移量
+	 * @param {number} [fY=0] 原始图片y轴偏移量
+	 * @param {number} [fW=img.width] 原始图片截取宽度
+	 * @param {number} [fH=img.height] 原始图片截图高度
+	 * @param {number} [tX=0] 画在画布上的x轴坐标
+	 * @param {number} [tY=0] 画在画布上的y轴坐标
+	 * @param {number} [tW=img.width] 图片在画布上的宽度
+	 * @param {number} [tH=img.height] 图片在画布上的高度
+	 * @param {number} [globalAlpha=1] 透明度
+	 */
+	function canvasDrawSingle(ctx, canvas, fX, fY, fW, fH, tX, tY, tW, tH, globalAlpha) {
+	    if (fX === void 0) { fX = 0; }
+	    if (fY === void 0) { fY = 0; }
+	    if (fW === void 0) { fW = canvas.width; }
+	    if (fH === void 0) { fH = canvas.height; }
+	    if (tX === void 0) { tX = 0; }
+	    if (tY === void 0) { tY = 0; }
+	    if (tW === void 0) { tW = canvas.width; }
+	    if (tH === void 0) { tH = canvas.height; }
+	    if (globalAlpha === void 0) { globalAlpha = 1; }
+	    if (globalAlpha == 1) {
+	        ctx.drawImage(canvas, fX, fY, fW, fH, tX, tY, tW, tH);
+	    }
+	    else {
+	        ctx.save();
+	        ctx.globalAlpha = globalAlpha;
+	        ctx.drawImage(canvas, fX, fY, fW, fH, tX, tY, tW, tH);
+	        ctx.restore();
+	    }
+	}
+	exports.canvasDrawSingle = canvasDrawSingle;
+	/**
 	 * 是否碰撞
 	 *
 	 * @export
@@ -419,9 +454,14 @@
 	 *
 	 *
 	 * @export
-	 * @param {any} callback
+	 * @param {function} callback
+	 * @param {number} interval
 	 */
-	function makeRequestAnimationFrame(callback) {
+	function makeRequestAnimationFrame(callback, interval) {
+	    if (interval) {
+	        setInterval(callback, interval);
+	        return;
+	    }
 	    callback();
 	    requestAnimationFrame(function () {
 	        makeRequestAnimationFrame(callback);
@@ -455,11 +495,10 @@
 	var Boom = (function (_super) {
 	    __extends(Boom, _super);
 	    function Boom(x, y, width, height, scale) {
-	        var _this = _super.call(this, x, y, width, height, scale) || this;
-	        _this.img = img;
-	        _this.imgSum = 14;
-	        _this.colourSpeed = 40;
-	        return _this;
+	        _super.call(this, x, y, width, height, scale);
+	        this.img = img;
+	        this.imgSum = 14;
+	        this.colourSpeed = 40;
 	    }
 	    Boom.prototype.onPaint = function (ctx) {
 	        var self = this;
@@ -470,13 +509,6 @@
 	    return Boom;
 	}(Shape_1.default));
 	Object.defineProperty(exports, "__esModule", { value: true });
-	/**
-	 * 爆炸 ， 现充都去爆炸吧！！！
-	 *
-	 * @export
-	 * @class Boom
-	 * @extends {Shape}
-	 */
 	exports.default = Boom;
 
 
@@ -615,6 +647,66 @@
 	        this.realHeight = height * scale;
 	        this.scale = scale;
 	    }
+	    Object.defineProperty(Shape.prototype, "x", {
+	        get: function () {
+	            return this._x;
+	        },
+	        set: function (num) {
+	            this._x = ~~num;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Shape.prototype, "y", {
+	        get: function () {
+	            return this._y;
+	        },
+	        set: function (num) {
+	            this._y = ~~num;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Shape.prototype, "width", {
+	        get: function () {
+	            return this._width;
+	        },
+	        set: function (num) {
+	            this._width = ~~num;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Shape.prototype, "height", {
+	        get: function () {
+	            return this._height;
+	        },
+	        set: function (num) {
+	            this._height = ~~num;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Shape.prototype, "realWidth", {
+	        get: function () {
+	            return this._realWidth;
+	        },
+	        set: function (num) {
+	            this._realWidth = ~~num;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Shape.prototype, "realHeight", {
+	        get: function () {
+	            return this._realHeight;
+	        },
+	        set: function (num) {
+	            this._realHeight = ~~num;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
 	    /**
 	     * 持续一段时间半透明
 	     *
@@ -667,6 +759,8 @@
 	var AI_1 = __webpack_require__(17);
 	var img = new Image();
 	img.src = imgBase64_1.imgEnemy;
+	while (!img.width)
+	    ;
 	var imghp = new Image();
 	imghp.src = imgBase64_1.imgHP;
 	var areaArr = [
@@ -728,21 +822,35 @@
 	    __extends(Enemy, _super);
 	    // public 
 	    function Enemy(x, y, width, enemyType, hp, scale) {
-	        var _this;
 	        var area = areaArr[enemyType];
 	        var height = width * area.h / area.w;
-	        _this = _super.call(this, x, y, width, height, scale) || this;
-	        _this.area = area;
-	        _this.img = img;
-	        _this.HP = hp;
-	        _this.maxHP = hp;
-	        _this.realWidth = width * _this.scale;
-	        _this.baseX = x;
-	        _this.baseY = y;
-	        _this.ai = new AI_1.default();
-	        _this.speed = 0.1;
-	        return _this;
+	        _super.call(this, x, y, width, height, scale);
+	        this.area = area;
+	        this.img = img;
+	        this.HP = hp;
+	        this.maxHP = hp;
+	        // this.realWidth = width * this.scale;
+	        this.baseX = x;
+	        this.baseY = y;
+	        this.ai = new AI_1.default();
+	        this.speed = 0.1;
+	        this.cacheImg();
 	    }
+	    /**
+	     * 缓存，性能优化
+	     *
+	     * @private
+	     *
+	     * @memberOf Enemy
+	     */
+	    Enemy.prototype.cacheImg = function () {
+	        this.cacheCanvas = document.createElement('canvas');
+	        this.cacheCanvas.width = this.realWidth;
+	        this.cacheCanvas.height = this.realHeight;
+	        var cacheCtx = this.cacheCanvas.getContext('2d');
+	        // 先在缓存画布上画一次
+	        utils_1.imgDrawSingle(cacheCtx, this.img, this.area.x, this.area.y, this.area.w, this.area.h, 0, 0, this.realWidth, this.realHeight);
+	    };
 	    Enemy.prototype.resetY = function (y) {
 	        this.baseY = y;
 	        this.y = y;
@@ -774,21 +882,47 @@
 	        }
 	        // 血条
 	        utils_1.imgDrawSingle(ctx, imghp, 0, 0, imghp.width, imghp.height, this.x - this.width * this.scale / 2, this.y - this.height * this.scale / 2 - 20 * this.scale, this.width * this.scale * this.HP / this.maxHP, 10 * this.scale);
+	        // imgDrawSingle(
+	        //     ctx,
+	        //     this.img,
+	        //     this.area.x,
+	        //     this.area.y,
+	        //     this.area.w,
+	        //     this.area.h,
+	        //     this.x - this.width * this.scale / 2,
+	        //     this.y - this.height * this.scale / 2,
+	        //     this.width * this.scale,
+	        //     this.height * this.scale
+	        // );
 	        // imgDrawSingle(ctx,imghp)
 	        // 自身
-	        utils_1.imgDrawSingle(ctx, this.img, this.area.x, this.area.y, this.area.w, this.area.h, this.x - this.width * this.scale / 2, this.y - this.height * this.scale / 2, this.width * this.scale, this.height * this.scale, opa);
+	        if (opa == 1) {
+	            ctx.drawImage(this.cacheCanvas, this.x - this.realWidth / 2, this.y - this.realHeight / 2);
+	        }
+	        else {
+	            ctx.save();
+	            ctx.globalAlpha = opa;
+	            ctx.drawImage(this.cacheCanvas, this.x - this.realWidth / 2, this.y - this.realHeight / 2);
+	            ctx.restore();
+	        }
+	        // canvasDrawSingle(
+	        //     ctx,
+	        //     this.cacheCanvas,
+	        //     0,
+	        //     0,
+	        //     this.realWidth,
+	        //     this.realHeight,
+	        //     this.x - this.realWidth / 2,
+	        //     this.y - this.realHeight / 2,
+	        //     this.realWidth,
+	        //     this.realHeight,
+	        //     opa
+	        // );
 	        // ctx.strokeRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
 	    };
 	    return Enemy;
 	}(Shape_1.default));
 	Object.defineProperty(exports, "__esModule", { value: true });
-	/**
-	 * 敌军
-	 *
-	 * @export
-	 * @class Enemy
-	 * @extends {Shape}
-	 */
 	exports.default = Enemy;
 
 
@@ -835,8 +969,9 @@
 	    function Bullet(x, y, width, height, typeIndex, scale) {
 	        if (typeIndex === void 0) { typeIndex = 0; }
 	        if (scale === void 0) { scale = 1; }
-	        var _this = _super.call(this, x, y, width, height, scale) || this;
-	        _this.ATK = 10;
+	        _super.call(this, x, y, width, height, scale);
+	        this.typeIndex = 0;
+	        this.ATK = 10;
 	        /**
 	         * 子弹飞行速度，每多少毫秒移动一个单位长度
 	         *
@@ -844,26 +979,25 @@
 	         * @type {number}
 	         * @memberOf Bullet
 	         */
-	        _this.speedSpan = 0.34;
+	        this.speedSpan = 0.34;
 	        // this.realWidth = width / 2;
 	        // this.realHeight = height;
 	        // this.img = imgEleBulletArr[typeIndex];
 	        // this.baseY = y;
 	        // this.speedSpan /= scale;
 	        // this.speedSpan += 0.12 * typeIndex;
-	        _this.resetBullet(x, y, width, height, typeIndex, scale);
+	        this.resetBullet(x, y, width, height, typeIndex, scale);
 	        var cache = cacheArr[typeIndex];
 	        if (!cache[0]) {
 	            cache[0] = true;
 	            var cacheCanvas = cache[1];
-	            cacheCanvas.width = _this.width * scale;
-	            cacheCanvas.height = _this.height * scale;
+	            cacheCanvas.width = this.realWidth;
+	            cacheCanvas.height = this.realHeight;
 	            var cacheCtx = cache[2];
 	            // cacheCanvas.width
-	            cacheCtx.drawImage(_this.img, 0, 0, _this.img.width, _this.img.height, 0, 0, cacheCanvas.width, cacheCanvas.height);
+	            cacheCtx.drawImage(this.img, 0, 0, this.img.width, this.img.height, 0, 0, cacheCanvas.width, cacheCanvas.height);
 	        }
-	        _this.cacheCanvas = cache[1];
-	        return _this;
+	        this.cacheCanvas = cache[1];
 	        // this.cacheCanvas = cache && <HTMLCanvasElement>cache[1];
 	    }
 	    Bullet.prototype.resetBullet = function (x, y, width, height, typeIndex, scale) {
@@ -877,6 +1011,9 @@
 	        this.baseY = y;
 	        this.speedSpan = 0.34 / scale;
 	        this.speedSpan = (0.34 + 0.12 * typeIndex) / scale;
+	        this.typeIndex = typeIndex;
+	        this.alive = true;
+	        this.createTime = new Date();
 	    };
 	    Bullet.prototype.onPaint = function (ctx) {
 	        var timeSpan = new Date().getTime() - this.createTime.getTime();
@@ -892,7 +1029,15 @@
 	        //     return;
 	        // }
 	        // ctx.drawImage(this.img, 0, 0, this.img.width, this.img.height, this.x - this.width * this.scale / 2, this.y - this.height * this.scale / 2, this.width * this.scale, this.height * this.scale);
-	        ctx.drawImage(this.cacheCanvas, 0, 0, this.cacheCanvas.width, this.cacheCanvas.height, this.x - this.cacheCanvas.width / 2, this.y - this.cacheCanvas.height / 2, this.cacheCanvas.width, this.cacheCanvas.height);
+	        // ctx.drawImage(
+	        //     this.cacheCanvas, 0, 0,
+	        //     this.cacheCanvas.width,
+	        //     this.cacheCanvas.height,
+	        //     this.x - this.cacheCanvas.width / 2,
+	        //     this.y - this.cacheCanvas.height / 2,
+	        //     this.cacheCanvas.width,
+	        //     this.cacheCanvas.height);
+	        ctx.drawImage(this.cacheCanvas, this.x - this.realWidth / 2, this.y - this.realHeight / 2);
 	        // ctx.strokeRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
 	    };
 	    return Bullet;
@@ -902,9 +1047,8 @@
 	    __extends(EnemyBullet, _super);
 	    function EnemyBullet(x, y, width, scale) {
 	        if (scale === void 0) { scale = 1; }
-	        var _this = _super.call(this, x, y, width, width, 3, scale) || this;
-	        _this.speedSpan = 3 / scale;
-	        return _this;
+	        _super.call(this, x, y, width, width, 3, scale);
+	        this.speedSpan = 3 / scale;
 	    }
 	    EnemyBullet.prototype.onPaint = function (ctx) {
 	        var timeSpan = new Date().getTime() - this.createTime.getTime();
@@ -986,15 +1130,14 @@
 	var Plane = (function (_super) {
 	    __extends(Plane, _super);
 	    function Plane(x, y, width, height, scale) {
-	        var _this = _super.call(this, x, y, width, height, scale) || this;
-	        _this.img = img;
-	        _this.imgSum = 11;
-	        _this.colourSpeed = 50;
-	        _this.realWidth = width * 0.5;
-	        _this.realHeight = height * 0.5;
-	        _this.maxHP = 100;
-	        _this.HP = _this.maxHP;
-	        return _this;
+	        _super.call(this, x, y, width, height, scale);
+	        this.img = img;
+	        this.imgSum = 11;
+	        this.colourSpeed = 50;
+	        this.realWidth = width * 0.5;
+	        this.realHeight = height * 0.5;
+	        this.maxHP = 100;
+	        this.HP = this.maxHP;
 	    }
 	    Plane.prototype.fire = function (option, bulletList) {
 	        // 发射间隔
@@ -1002,8 +1145,8 @@
 	        //     return;
 	        // }
 	        // this.lastFireTime = new Date();
-	        var sumNow = 0;
-	        var sumNum = option.length;
+	        var sumNow = 0; // 当前子弹数量
+	        var sumNum = option.length; // 需要的子弹数量
 	        var i = 0;
 	        var len = bulletList.length;
 	        var bullet;
@@ -1011,8 +1154,9 @@
 	            if (sumNow >= sumNum)
 	                break; // 如果够了就停下来
 	            bullet = bulletList[i];
-	            if (!bullet.alive) {
-	                this.resetBullet(bullet, option[sumNow][1]);
+	            if (!bullet.alive && bullet.typeIndex == option[sumNow][0]) {
+	                this.resetBullet(bullet, option[sumNow][0], option[sumNow][1]);
+	                // console.log(1);
 	                sumNow++;
 	            }
 	        }
@@ -1087,13 +1231,6 @@
 	    return Plane;
 	}(Shape_1.default));
 	Object.defineProperty(exports, "__esModule", { value: true });
-	/**
-	 * 飞机，打飞机~ 大哥哥这是什么？呀！好长！诶？！好滑哦(๑• . •๑)！阿呜～
-	 *
-	 * @export
-	 * @class Plane
-	 * @extends {Shape}
-	 */
 	exports.default = Plane;
 
 

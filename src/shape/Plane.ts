@@ -51,8 +51,8 @@ export default class Plane extends Shape {
 
         // this.lastFireTime = new Date();
 
-        let sumNow = 0;
-        let sumNum = option.length;
+        let sumNow = 0;  // 当前子弹数量
+        let sumNum = option.length;  // 需要的子弹数量
 
         let i = 0;
         let len = bulletList.length;
@@ -60,8 +60,9 @@ export default class Plane extends Shape {
         for (; i < len; i++) {  // 在原子弹列表中寻找不用的子弹，再利用
             if (sumNow >= sumNum) break; // 如果够了就停下来
             bullet = bulletList[i];
-            if (!bullet.alive) {
-                this.resetBullet(bullet, option[sumNow][1]);
+            if (!bullet.alive && bullet.typeIndex == option[sumNow][0]) {
+                this.resetBullet(bullet, option[sumNow][0], option[sumNow][1]);
+                // console.log(1);
                 sumNow++;
             }
         }

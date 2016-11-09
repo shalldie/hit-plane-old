@@ -1,6 +1,6 @@
 import Shape from './Shape';
 
-import { imgDrawSingle } from '../utils/utils';
+import { imgDrawSingle, canvasDrawSingle } from '../utils/utils';
 
 import { imgEnemy, imgHP } from '../img/imgBase64';
 
@@ -11,8 +11,11 @@ import AI from '../logic/AI';
 let img = new Image();
 img.src = imgEnemy;
 
+while (!img.width);
+
 let imghp = new Image();
 imghp.src = imgHP;
+
 
 let areaArr = [  // 每种敌军飞机在图片中的坐标和宽高
     {
@@ -84,6 +87,8 @@ export default class Enemy extends Shape {
 
     public speed: number;
 
+    private cacheCanvas: HTMLCanvasElement;
+
     // public 
 
     constructor(x: number, y: number, width: number, enemyType: EnemyType, hp: number, scale: number) {
@@ -94,11 +99,41 @@ export default class Enemy extends Shape {
         this.img = img;
         this.HP = hp;
         this.maxHP = hp;
-        this.realWidth = width * this.scale;
+        // this.realWidth = width * this.scale;
         this.baseX = x;
         this.baseY = y;
         this.ai = new AI();
         this.speed = 0.1;
+        this.cacheImg();
+    }
+
+    /**
+     * 缓存，性能优化
+     * 
+     * @private
+     * 
+     * @memberOf Enemy
+     */
+    private cacheImg(): void {
+        this.cacheCanvas = document.createElement('canvas');
+        this.cacheCanvas.width = this.realWidth;
+        this.cacheCanvas.height = this.realHeight;
+
+        let cacheCtx = this.cacheCanvas.getContext('2d');
+
+        // 先在缓存画布上画一次
+        imgDrawSingle(
+            cacheCtx,
+            this.img,
+            this.area.x,
+            this.area.y,
+            this.area.w,
+            this.area.h,
+            0,
+            0,
+            this.realWidth,
+            this.realHeight
+        );
     }
 
     public resetY(y: number): void {
@@ -148,20 +183,43 @@ export default class Enemy extends Shape {
             this.width * this.scale * this.HP / this.maxHP,
             10 * this.scale);
 
+        // imgDrawSingle(
+        //     ctx,
+        //     this.img,
+        //     this.area.x,
+        //     this.area.y,
+        //     this.area.w,
+        //     this.area.h,
+        //     this.x - this.width * this.scale / 2,
+        //     this.y - this.height * this.scale / 2,
+        //     this.width * this.scale,
+        //     this.height * this.scale
+        // );
+
         // imgDrawSingle(ctx,imghp)
         // 自身
-        imgDrawSingle(
-            ctx,
-            this.img,
-            this.area.x,
-            this.area.y,
-            this.area.w,
-            this.area.h,
-            this.x - this.width * this.scale / 2,
-            this.y - this.height * this.scale / 2,
-            this.width * this.scale,
-            this.height * this.scale,
-            opa);
+        if (opa == 1) {
+            ctx.drawImage(this.cacheCanvas, this.x - this.realWidth / 2, this.y - this.realHeight / 2);
+        } else {
+            ctx.save();
+            ctx.globalAlpha = opa;
+            ctx.drawImage(this.cacheCanvas, this.x - this.realWidth / 2, this.y - this.realHeight / 2);
+            ctx.restore();
+        }
+
+        // canvasDrawSingle(
+        //     ctx,
+        //     this.cacheCanvas,
+        //     0,
+        //     0,
+        //     this.realWidth,
+        //     this.realHeight,
+        //     this.x - this.realWidth / 2,
+        //     this.y - this.realHeight / 2,
+        //     this.realWidth,
+        //     this.realHeight,
+        //     opa
+        // );
 
         // ctx.strokeRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
 

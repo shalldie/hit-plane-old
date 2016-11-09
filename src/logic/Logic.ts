@@ -65,7 +65,7 @@ export default class Logic {
         this.newPlane();
         setInterval(function () {
             this.newEnemy();
-            console.log(that.bulletList.length);
+            // console.log(that.bulletList.length);
         }.bind(this), 1500);
         this.newEnemy();
         this.keepRefresh();
@@ -152,20 +152,20 @@ export default class Logic {
     private keepRefresh() {
         let self = this;
         utils.makeRequestAnimationFrame(function () {
-            self.checkIntersect(); // 碰撞检测
+            self.checkIntersectAndOut(); // 碰撞检测和出界
             self.onGC();  // 垃圾回收
             self.onPaint();  // 绘制
-        });
+        }, null);
     }
 
     /**
-     * 碰撞检测，并判断有效性
+     * 碰撞检测，出界，并判断有效性
      * 
      * @private
      * 
      * @memberOf Logic
      */
-    private checkIntersect(): void {
+    private checkIntersectAndOut(): void {
         let i = 0, x = 0, y = 0, len = 0, len2 = 0;
         let enemy: Enemy;
         let bullet: Bullet;
@@ -175,7 +175,12 @@ export default class Logic {
             enemy = this.enemyList[x];
             for (y = 0, len2 = this.bulletList.length; y < len2; y++) {
                 bullet = this.bulletList[y];
-                if (enemy.alive && utils.ifIntersect(enemy, bullet)) {   // 如果子弹击中敌军
+
+                if (bullet.alive && bullet.y + bullet.height < 0) { // 子弹是否存活
+                    bullet.alive = false;
+                }
+
+                if (bullet.alive && enemy.alive && utils.ifIntersect(enemy, bullet)) {   // 如果子弹击中敌军
                     bullet.alive = false;
                     enemy.HP -= bullet.ATK; // 扣除生命值
                     enemy.makeOpacity(0.5, 10);
@@ -193,7 +198,9 @@ export default class Logic {
             enemyBullet = this.enemyBulletList[i];
             if (this.plane.alive && utils.ifIntersect(this.plane, enemyBullet)) {  // 被击中
                 // this.plane.alive = false;
-                this.plane.makeOpacity(0.5, 10);
+                enemyBullet.alive = false;
+
+                this.plane.makeOpacity(0.5, 2000);
             }
         }
 
@@ -207,7 +214,7 @@ export default class Logic {
      * @memberOf Logic
      */
     private onGC(): void {
-        this.bulletList = this.bulletList.filter(n => n.alive && n.y + n.height > 0);
+        // this.bulletList = this.bulletList.filter(n => n.alive && n.y + n.height > 0);
         this.enemyBulletList = this.enemyBulletList.filter(n => n.alive && n.y - n.height < this.height);
         this.boomList = this.boomList.filter(n => n.alive);
 

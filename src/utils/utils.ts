@@ -97,6 +97,45 @@ export function imgDrawSingle(
 }
 
 /**
+ * 绘制单一图片
+ * 
+ * @export
+ * @param {CanvasRenderingContext2D} ctx 画布对象
+ * @param {HTMLCanvasElement} canvas 画布
+ * @param {number} [fX=0] 原始图片x轴偏移量
+ * @param {number} [fY=0] 原始图片y轴偏移量
+ * @param {number} [fW=img.width] 原始图片截取宽度
+ * @param {number} [fH=img.height] 原始图片截图高度
+ * @param {number} [tX=0] 画在画布上的x轴坐标
+ * @param {number} [tY=0] 画在画布上的y轴坐标
+ * @param {number} [tW=img.width] 图片在画布上的宽度
+ * @param {number} [tH=img.height] 图片在画布上的高度
+ * @param {number} [globalAlpha=1] 透明度
+ */
+export function canvasDrawSingle(
+    ctx: CanvasRenderingContext2D,
+    canvas: HTMLCanvasElement,
+    fX: number = 0,
+    fY: number = 0,
+    fW: number = canvas.width,
+    fH: number = canvas.height,
+    tX: number = 0,
+    tY: number = 0,
+    tW: number = canvas.width,
+    tH: number = canvas.height,
+    globalAlpha: number = 1): void {
+    if (globalAlpha == 1) {
+        ctx.drawImage(canvas, fX, fY, fW, fH, tX, tY, tW, tH);
+    } else {
+        ctx.save();
+        ctx.globalAlpha = globalAlpha;
+        ctx.drawImage(canvas, fX, fY, fW, fH, tX, tY, tW, tH);
+        ctx.restore();
+    }
+
+}
+
+/**
  * 是否碰撞
  * 
  * @export
@@ -117,9 +156,14 @@ export function ifIntersect(obj1: Shape, obj2: Shape): boolean {
  * 
  * 
  * @export
- * @param {any} callback
+ * @param {function} callback
+ * @param {number} interval
  */
-export function makeRequestAnimationFrame(callback) {
+export function makeRequestAnimationFrame(callback, interval?: number) {
+    if (interval) {
+        setInterval(callback, interval);
+        return;
+    }
     callback();
     requestAnimationFrame(function () {
         makeRequestAnimationFrame(callback);
