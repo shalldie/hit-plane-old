@@ -61,9 +61,11 @@ export default class Logic {
     }
 
     public start(): void {
+        let that = this;
         this.newPlane();
         setInterval(function () {
             this.newEnemy();
+            console.log(that.bulletList.length);
         }.bind(this), 1500);
         this.newEnemy();
         this.keepRefresh();
@@ -120,7 +122,7 @@ export default class Logic {
             return;
         }
 
-        enemy.resetY(-enemy.height/2);
+        enemy.resetY(-enemy.height / 2);
         enemy.speed *= Math.random() + 1;
 
         this.enemyList.push(enemy);
