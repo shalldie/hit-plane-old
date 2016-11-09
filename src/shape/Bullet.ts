@@ -67,7 +67,7 @@ export class Bullet extends Shape {
         this.img = imgEleBulletArr[typeIndex];
         this.baseY = y;
         this.speedSpan = 0.34 / scale;
-        this.speedSpan = 0.34 + 0.12 * typeIndex;
+        this.speedSpan = (0.34 + 0.12 * typeIndex) / scale;
     }
 
     private cacheCanvas: HTMLCanvasElement;
