@@ -19,7 +19,7 @@ export default class AI {
 
     private getNormalBehave(enemy: Enemy, timeNow: Date, scale: number = 1): void {
         let timeDiff = timeNow.getTime() - enemy.createTime.getTime();
-        enemy.y = enemy.baseY + timeDiff * enemy.speed;
+        enemy.y = enemy.baseY + (timeDiff * enemy.speed) * scale;
     }
 
     private getShakeBehave(enemy: Enemy, timeNow: Date): void {
