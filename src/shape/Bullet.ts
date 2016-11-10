@@ -7,7 +7,7 @@ import { imgSpirit } from '../utils/utils';  // 精灵渲染辅助方法
 let imgEleBulletArr = imgBulletArr.map(n => {
     let img = new Image();
     img.src = n;
-    while (!img.width); // 首次加载模块，阻塞ui等待加载完全
+    // while (!img.width); // 首次加载模块，阻塞ui等待加载完全
     return img;
 });
 
