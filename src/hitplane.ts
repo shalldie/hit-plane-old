@@ -51,3 +51,6 @@ else {
         ex.cancelBubble = true;
     });
 }
+
+var loading = document.getElementById('loading');
+loading && (loading.style.display = 'none');
