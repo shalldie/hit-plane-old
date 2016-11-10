@@ -11,7 +11,13 @@
     <strong id="loading" style="position: absolute;left: 0;top: 0;font-size: 30px;">loading......</strong>
     <div id="bg"></div>
     <canvas id="demo"></canvas>
-    <script defer src="dist/hitplane.js?v=12"></script>
+    <script>
+        setTimeout(function(){
+            var ele=document.createElment('script');
+            ele.src='dist/hitplane.js?v='+Math.random();
+            document.body.appendChild(ele);
+        },10);
+    </script>
 </body>
 
 </html>
