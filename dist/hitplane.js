@@ -124,6 +124,7 @@
 	         */
 	        this.boomList = [];
 	        this.scale = 1;
+	        this.tag = 1;
 	        this.width = width;
 	        this.height = height;
 	        this.ctx = ctx;
@@ -163,7 +164,7 @@
 	        this.plane = new Plane_1.default(this.width / 2, 0, 172, 200, this.scale);
 	        this.plane.y = this.height - this.plane.height * this.scale;
 	        this.plane.makeOpacity(0.5, 3000);
-	        setInterval(function () {
+	        var timer = setInterval(function () {
 	            this.plane.fire([
 	                [0, 0],
 	                [1, 1],
@@ -171,6 +172,9 @@
 	                [2, 1],
 	                [2, 2]
 	            ], this.bulletList);
+	            if (!this.plane.alive) {
+	                clearInterval(timer);
+	            }
 	        }.bind(this), 110);
 	    };
 	    /**
@@ -215,9 +219,16 @@
 	    Logic.prototype.keepRefresh = function () {
 	        var self = this;
 	        utils.makeRequestAnimationFrame(function () {
-	            self.checkIntersectAndOut(); // 碰撞检测和出界
-	            self.onGC(); // 垃圾回收
 	            self.onPaint(); // 绘制
+	            self.tag++;
+	            if (self.tag > 1000)
+	                self.tag = 0;
+	            if (self.tag % 2 == 0) {
+	                self.checkIntersectAndOut(); // 碰撞检测和出界
+	            }
+	            if (self.tag % 20 == 0) {
+	                self.onGC(); // 垃圾回收
+	            }
 	        }, null);
 	    };
 	    /**
@@ -228,6 +239,9 @@
 	     * @memberOf Logic
 	     */
 	    Logic.prototype.checkIntersectAndOut = function () {
+	        // this.tag++;
+	        // this.tag = this.tag % 5;
+	        // if (this.tag != 0) return;
 	        var i = 0, x = 0, y = 0, len = 0, len2 = 0;
 	        var enemy;
 	        var bullet;
@@ -323,12 +337,6 @@
 	    return Logic;
 	}());
 	Object.defineProperty(exports, "__esModule", { value: true });
-	/**
-	 * 游戏逻辑类
-	 *
-	 * @export
-	 * @class Logic
-	 */
 	exports.default = Logic;
 
 
@@ -509,11 +517,10 @@
 	var Boom = (function (_super) {
 	    __extends(Boom, _super);
 	    function Boom(x, y, width, height, scale) {
-	        var _this = _super.call(this, x, y, width, height, scale) || this;
-	        _this.img = imgBase64_1.imgBoom;
-	        _this.imgSum = 14;
-	        _this.colourSpeed = 40;
-	        return _this;
+	        _super.call(this, x, y, width, height, scale);
+	        this.img = imgBase64_1.imgBoom;
+	        this.imgSum = 14;
+	        this.colourSpeed = 40;
 	    }
 	    Boom.prototype.onPaint = function (ctx) {
 	        var self = this;
@@ -524,13 +531,6 @@
 	    return Boom;
 	}(Shape_1.default));
 	Object.defineProperty(exports, "__esModule", { value: true });
-	/**
-	 * 爆炸 ， 现充都去爆炸吧！！！
-	 *
-	 * @export
-	 * @class Boom
-	 * @extends {Shape}
-	 */
 	exports.default = Boom;
 
 
@@ -785,21 +785,19 @@
 	    __extends(Enemy, _super);
 	    // public 
 	    function Enemy(x, y, width, enemyType, hp, scale) {
-	        var _this;
 	        var area = areaArr[enemyType];
 	        var height = width * area.h / area.w;
-	        _this = _super.call(this, x, y, width, height, scale) || this;
-	        _this.area = area;
-	        _this.img = imgBase64_1.imgEnemy;
-	        _this.HP = hp;
-	        _this.maxHP = hp;
+	        _super.call(this, x, y, width, height, scale);
+	        this.area = area;
+	        this.img = imgBase64_1.imgEnemy;
+	        this.HP = hp;
+	        this.maxHP = hp;
 	        // this.realWidth = width * this.scale;
-	        _this.baseX = x;
-	        _this.baseY = y;
-	        _this.ai = new AI_1.default();
-	        _this.speed = 0.1;
-	        _this.cacheImg();
-	        return _this;
+	        this.baseX = x;
+	        this.baseY = y;
+	        this.ai = new AI_1.default();
+	        this.speed = 0.1;
+	        this.cacheImg();
 	    }
 	    /**
 	     * 缓存，性能优化
@@ -890,13 +888,6 @@
 	    return Enemy;
 	}(Shape_1.default));
 	Object.defineProperty(exports, "__esModule", { value: true });
-	/**
-	 * 敌军
-	 *
-	 * @export
-	 * @class Enemy
-	 * @extends {Shape}
-	 */
 	exports.default = Enemy;
 
 
@@ -925,9 +916,9 @@
 	    function Bullet(x, y, width, height, typeIndex, scale) {
 	        if (typeIndex === void 0) { typeIndex = 0; }
 	        if (scale === void 0) { scale = 1; }
-	        var _this = _super.call(this, x, y, width, height, scale) || this;
-	        _this.typeIndex = 0;
-	        _this.ATK = 10;
+	        _super.call(this, x, y, width, height, scale);
+	        this.typeIndex = 0;
+	        this.ATK = 10;
 	        /**
 	         * 子弹飞行速度，每多少毫秒移动一个单位长度
 	         *
@@ -935,10 +926,9 @@
 	         * @type {number}
 	         * @memberOf Bullet
 	         */
-	        _this.speedSpan = 0.34;
-	        _this.resetBullet(x, y, width, height, typeIndex, scale);
-	        _this.makeCache();
-	        return _this;
+	        this.speedSpan = 0.34;
+	        this.resetBullet(x, y, width, height, typeIndex, scale);
+	        this.makeCache();
 	    }
 	    Bullet.prototype.makeCache = function () {
 	        this.cacheCanvas = document.createElement('canvas');
@@ -974,9 +964,8 @@
 	    __extends(EnemyBullet, _super);
 	    function EnemyBullet(x, y, width, scale) {
 	        if (scale === void 0) { scale = 1; }
-	        var _this = _super.call(this, x, y, width, width, 3, scale) || this;
-	        _this.speedSpan = 3 / scale;
-	        return _this;
+	        _super.call(this, x, y, width, width, 3, scale);
+	        this.speedSpan = 3 / scale;
 	    }
 	    EnemyBullet.prototype.onPaint = function (ctx) {
 	        var timeSpan = new Date().getTime() - this.createTime.getTime();
@@ -1048,15 +1037,14 @@
 	var Plane = (function (_super) {
 	    __extends(Plane, _super);
 	    function Plane(x, y, width, height, scale) {
-	        var _this = _super.call(this, x, y, width, height, scale) || this;
-	        _this.img = imgBase64_1.imgPlane;
-	        _this.imgSum = 11;
-	        _this.colourSpeed = 50;
-	        _this.realWidth = width * 0.5;
-	        _this.realHeight = height * 0.5;
-	        _this.maxHP = 100;
-	        _this.HP = _this.maxHP;
-	        return _this;
+	        _super.call(this, x, y, width, height, scale);
+	        this.img = imgBase64_1.imgPlane;
+	        this.imgSum = 11;
+	        this.colourSpeed = 50;
+	        this.realWidth = width * 0.5;
+	        this.realHeight = height * 0.5;
+	        this.maxHP = 100;
+	        this.HP = this.maxHP;
 	    }
 	    Plane.prototype.fire = function (option, bulletList) {
 	        // 发射间隔
@@ -1127,13 +1115,6 @@
 	    return Plane;
 	}(Shape_1.default));
 	Object.defineProperty(exports, "__esModule", { value: true });
-	/**
-	 * 飞机，打飞机~ 大哥哥这是什么？呀！好长！诶？！好滑哦(๑• . •๑)！阿呜～
-	 *
-	 * @export
-	 * @class Plane
-	 * @extends {Shape}
-	 */
 	exports.default = Plane;
 
 

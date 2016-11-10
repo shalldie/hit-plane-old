@@ -96,7 +96,7 @@ export default class Logic {
         this.plane = new Plane(this.width / 2, 0, 172, 200, this.scale);
         this.plane.y = this.height - this.plane.height * this.scale;
         this.plane.makeOpacity(0.5, 3000);
-        setInterval(function () {
+        let timer = setInterval(function () {
             this.plane.fire([
                 [0, 0],
                 [1, 1],
@@ -104,6 +104,9 @@ export default class Logic {
                 [2, 1],
                 [2, 2]
             ], this.bulletList);
+            if (!this.plane.alive) {
+                clearInterval(timer);
+            }
         }.bind(this), 110);
     }
 
@@ -156,11 +159,22 @@ export default class Logic {
     private keepRefresh() {
         let self = this;
         utils.makeRequestAnimationFrame(function () {
-            self.checkIntersectAndOut(); // 碰撞检测和出界
-            self.onGC();  // 垃圾回收
             self.onPaint();  // 绘制
+
+            self.tag++;
+            if (self.tag > 1000) self.tag = 0;
+
+            if (self.tag % 2 == 0) {
+                self.checkIntersectAndOut(); // 碰撞检测和出界
+            }
+
+            if (self.tag % 20 == 0) {
+                self.onGC();  // 垃圾回收
+            }
         }, null);
     }
+
+    private tag: number = 1;
 
     /**
      * 碰撞检测，出界，并判断有效性
@@ -170,6 +184,10 @@ export default class Logic {
      * @memberOf Logic
      */
     private checkIntersectAndOut(): void {
+        // this.tag++;
+        // this.tag = this.tag % 5;
+        // if (this.tag != 0) return;
+
         let i = 0, x = 0, y = 0, len = 0, len2 = 0;
         let enemy: Enemy;
         let bullet: Bullet;
