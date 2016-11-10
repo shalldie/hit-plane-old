@@ -55,9 +55,9 @@
 	bg.style.width = ele.width / 2 + "px";
 	bg.style.height = ele.height + "px";
 	var ctx = ele.getContext("2d");
-	var logic = new Logic_1.default(ele.width, ele.height, ctx);
-	logic.start();
 	var ifPC = !navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i);
+	var logic = new Logic_1.default(ele.width, ele.height, ctx, !ifPC);
+	logic.start();
 	if (ifPC) {
 	    ele.addEventListener('mousemove', function (ex) {
 	        logic.setPosition(ex.offsetX, ex.offsetY);
@@ -104,7 +104,7 @@
 	 * @class Logic
 	 */
 	var Logic = (function () {
-	    function Logic(width, height, ctx) {
+	    function Logic(width, height, ctx, ifPhone) {
 	        /**
 	         * 敌军列表
 	         *
@@ -128,6 +128,10 @@
 	        this.height = height;
 	        this.ctx = ctx;
 	        this.scale = this.height / 1200; // 等比缩放，保证在不同分辨率下比例一致，类似rem的效果
+	        // console.log(height);
+	        if (ifPhone) {
+	            this.scale *= 1.3;
+	        }
 	        // this.scale = 1;
 	    }
 	    Logic.prototype.start = function () {

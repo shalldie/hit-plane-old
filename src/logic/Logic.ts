@@ -52,11 +52,15 @@ export default class Logic {
     private scale: number = 1;
 
 
-    constructor(width: number, height: number, ctx: CanvasRenderingContext2D) {
+    constructor(width: number, height: number, ctx: CanvasRenderingContext2D, ifPhone: boolean) {
         this.width = width;
         this.height = height;
         this.ctx = ctx;
         this.scale = this.height / 1200; // 等比缩放，保证在不同分辨率下比例一致，类似rem的效果
+        // console.log(height);
+        if (ifPhone) {
+            this.scale *= 1.3;
+        }
         // this.scale = 1;
     }
 

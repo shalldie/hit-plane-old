@@ -15,13 +15,11 @@ bg.style.height = ele.height + "px";
 let ctx = ele.getContext("2d");
 
 
+let ifPC = !navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i);
 
-let logic = new Logic(ele.width, ele.height, ctx);
+let logic = new Logic(ele.width, ele.height, ctx, !ifPC);
 
 logic.start();
-
-
-let ifPC = !navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i);
 
 if (ifPC) {
     ele.addEventListener('mousemove', function (ex) {
