@@ -86,8 +86,6 @@
 	        ex.cancelBubble = true;
 	    });
 	}
-	var loading = document.getElementById('loading');
-	loading && (loading.style.display = 'none');
 
 
 /***/ },
@@ -139,7 +137,7 @@
 	            this.newEnemy();
 	            // console.log(that.bulletList.length);
 	        }.bind(this), 1500);
-	        this.newEnemy();
+	        // this.newEnemy();
 	        this.keepRefresh();
 	    };
 	    Logic.prototype.setPosition = function (x, y) {
@@ -281,36 +279,42 @@
 	        var enemyBullet;
 	        var enemy;
 	        var boom;
-	        // 绘制自身子弹
-	        for (i = 0, len = this.bulletList.length; i < len; i++) {
-	            bullet = this.bulletList[i];
-	            if (bullet.alive) {
-	                bullet.onPaint(this.ctx);
+	        try {
+	            // 绘制自身子弹
+	            for (i = 0, len = this.bulletList.length; i < len; i++) {
+	                bullet = this.bulletList[i];
+	                if (bullet.alive) {
+	                    bullet.onPaint(this.ctx);
+	                }
 	            }
-	        }
-	        // 绘制敌军子弹
-	        for (i = 0, len = this.enemyBulletList.length; i < len; i++) {
-	            enemyBullet = this.enemyBulletList[i];
-	            if (enemyBullet.alive) {
-	                enemyBullet.onPaint(this.ctx);
+	            // 绘制敌军子弹
+	            for (i = 0, len = this.enemyBulletList.length; i < len; i++) {
+	                enemyBullet = this.enemyBulletList[i];
+	                if (enemyBullet.alive) {
+	                    enemyBullet.onPaint(this.ctx);
+	                }
 	            }
-	        }
-	        // 绘制敌军
-	        for (i = 0, len = this.enemyList.length; i < len; i++) {
-	            enemy = this.enemyList[i];
-	            if (enemy.alive) {
-	                enemy.onPaint(this.ctx);
+	            // 绘制敌军
+	            for (i = 0, len = this.enemyList.length; i < len; i++) {
+	                enemy = this.enemyList[i];
+	                if (enemy.alive) {
+	                    enemy.onPaint(this.ctx);
+	                }
 	            }
-	        }
-	        // 爆炸效果
-	        for (i = 0, len = this.boomList.length; i < len; i++) {
-	            boom = this.boomList[i];
-	            if (boom.alive) {
-	                boom.onPaint(this.ctx);
+	            // 爆炸效果
+	            for (i = 0, len = this.boomList.length; i < len; i++) {
+	                boom = this.boomList[i];
+	                if (boom.alive) {
+	                    boom.onPaint(this.ctx);
+	                }
 	            }
+	            // 绘制自身飞机
+	            this.plane.onPaint(this.ctx);
 	        }
-	        // 绘制自身飞机
-	        this.plane.onPaint(this.ctx);
+	        catch (ex) {
+	            console.log(ex);
+	            throw ex;
+	        }
 	    };
 	    return Logic;
 	}());
@@ -491,8 +495,6 @@
 	var imgBase64_1 = __webpack_require__(4);
 	var Shape_1 = __webpack_require__(5);
 	var utils_1 = __webpack_require__(2);
-	var img = new Image();
-	img.src = imgBase64_1.imgBoom;
 	/**
 	 * 爆炸 ， 现充都去爆炸吧！！！
 	 *
@@ -504,7 +506,7 @@
 	    __extends(Boom, _super);
 	    function Boom(x, y, width, height, scale) {
 	        var _this = _super.call(this, x, y, width, height, scale) || this;
-	        _this.img = img;
+	        _this.img = imgBase64_1.imgBoom;
 	        _this.imgSum = 14;
 	        _this.colourSpeed = 40;
 	        return _this;
@@ -533,13 +535,18 @@
 /***/ function(module, exports) {
 
 	"use strict";
-	var source = JSON.parse(localStorage["hitplane-source"]);
-	exports.imgPlane = source["imgPlane"];
-	exports.imgBoom = source["imgBoom"];
-	exports.imgBulletArr = source["imgBulletArr"];
-	exports.imgHP = source["imgHP"]; // HP 图片
-	exports.imgEnemy = source["imgEnemy"]; // 敌军飞机图片
-	exports.imgHeart = source["imgHeart"]; // ❤️ 图片
+	var source = window["hitplane_source"];
+	exports.imgPlane = source["plane"];
+	exports.imgBoom = source["boom"];
+	exports.imgBulletArr = [
+	    source["bullet01"],
+	    source["bullet02"],
+	    source["bullet03"],
+	    source["enemy_bullet"]
+	];
+	exports.imgHP = source["hp"]; // HP 图片
+	exports.imgEnemy = source["enemy"]; // 敌军飞机图片
+	exports.imgHeart = source["heart"]; // ❤️ 图片
 
 
 /***/ },
@@ -715,12 +722,6 @@
 	var imgBase64_1 = __webpack_require__(4);
 	var Bullet_1 = __webpack_require__(7);
 	var AI_1 = __webpack_require__(8);
-	var img = new Image();
-	img.src = imgBase64_1.imgEnemy;
-	while (!img.width)
-	    ;
-	var imghp = new Image();
-	imghp.src = imgBase64_1.imgHP;
 	var areaArr = [
 	    {
 	        x: 0,
@@ -785,7 +786,7 @@
 	        var height = width * area.h / area.w;
 	        _this = _super.call(this, x, y, width, height, scale) || this;
 	        _this.area = area;
-	        _this.img = img;
+	        _this.img = imgBase64_1.imgEnemy;
 	        _this.HP = hp;
 	        _this.maxHP = hp;
 	        // this.realWidth = width * this.scale;
@@ -833,6 +834,8 @@
 	     * @memberOf Enemy
 	     */
 	    Enemy.prototype.onPaint = function (ctx) {
+	        if (!this.cacheCanvas)
+	            return;
 	        // this.ai.behave(this);
 	        var timeNow = new Date();
 	        this.ai.behave(this, timeNow, this.scale); // ai 行为
@@ -841,7 +844,7 @@
 	            opa = this.opacity;
 	        }
 	        // 血条
-	        utils_1.imgDrawSingle(ctx, imghp, 0, 0, imghp.width, imghp.height, this.x - this.width * this.scale / 2, this.y - this.height * this.scale / 2 - 20 * this.scale, this.width * this.scale * this.HP / this.maxHP, 10 * this.scale);
+	        utils_1.imgDrawSingle(ctx, imgBase64_1.imgHP, 0, 0, imgBase64_1.imgHP.width, imgBase64_1.imgHP.height, this.x - this.width * this.scale / 2, this.y - this.height * this.scale / 2 - 20 * this.scale, this.width * this.scale * this.HP / this.maxHP, 10 * this.scale);
 	        // imgDrawSingle(
 	        //     ctx,
 	        //     this.img,
@@ -906,28 +909,6 @@
 	var Shape_1 = __webpack_require__(5);
 	var imgBase64_1 = __webpack_require__(4);
 	var utils_1 = __webpack_require__(2); // 精灵渲染辅助方法
-	var imgEleBulletArr = imgBase64_1.imgBulletArr.map(function (n) {
-	    var img = new Image();
-	    // let hasLoad = false;
-	    img.src = n;
-	    // img.onload = function () {
-	    //     hasLoad = true;
-	    // }
-	    // if (img.complete) hasLoad = true;
-	    // while (!hasLoad);
-	    return img;
-	});
-	// import config from '../config';
-	// let cacheArr: [boolean, HTMLCanvasElement, CanvasRenderingContext2D][];
-	var cacheArr = imgEleBulletArr.map(function () {
-	    var cacheCanvas = document.createElement('canvas'); // 离屏 canvas
-	    var cacheCtx = cacheCanvas.getContext('2d');
-	    return [
-	        false,
-	        cacheCanvas,
-	        cacheCtx // 画布对象
-	    ];
-	});
 	/**
 	 * 子弹
 	 *
@@ -951,27 +932,17 @@
 	         * @memberOf Bullet
 	         */
 	        _this.speedSpan = 0.34;
-	        // this.realWidth = width / 2;
-	        // this.realHeight = height;
-	        // this.img = imgEleBulletArr[typeIndex];
-	        // this.baseY = y;
-	        // this.speedSpan /= scale;
-	        // this.speedSpan += 0.12 * typeIndex;
 	        _this.resetBullet(x, y, width, height, typeIndex, scale);
-	        var cache = cacheArr[typeIndex];
-	        if (!cache[0]) {
-	            cache[0] = true;
-	            var cacheCanvas = cache[1];
-	            cacheCanvas.width = _this.realWidth;
-	            cacheCanvas.height = _this.realHeight;
-	            var cacheCtx = cache[2];
-	            // cacheCanvas.width
-	            cacheCtx.drawImage(_this.img, 0, 0, _this.img.width, _this.img.height, 0, 0, cacheCanvas.width, cacheCanvas.height);
-	        }
-	        _this.cacheCanvas = cache[1];
+	        _this.makeCache();
 	        return _this;
-	        // this.cacheCanvas = cache && <HTMLCanvasElement>cache[1];
 	    }
+	    Bullet.prototype.makeCache = function () {
+	        this.cacheCanvas = document.createElement('canvas');
+	        this.cacheCanvas.width = this.realWidth;
+	        this.cacheCanvas.height = this.realHeight;
+	        var cacheCtx = this.cacheCanvas.getContext('2d');
+	        cacheCtx.drawImage(this.img, 0, 0, this.img.width, this.img.height, 0, 0, this.cacheCanvas.width, this.cacheCanvas.height);
+	    };
 	    Bullet.prototype.resetBullet = function (x, y, width, height, typeIndex, scale) {
 	        if (typeIndex === void 0) { typeIndex = 0; }
 	        if (scale === void 0) { scale = 1; }
@@ -979,7 +950,7 @@
 	        this.y = y;
 	        this.width = width;
 	        this.height = height;
-	        this.img = imgEleBulletArr[typeIndex];
+	        this.img = imgBase64_1.imgBulletArr[typeIndex];
 	        this.baseY = y;
 	        this.speedSpan = 0.34 / scale;
 	        this.speedSpan = (0.34 + 0.12 * typeIndex) / scale;
@@ -1006,12 +977,6 @@
 	    EnemyBullet.prototype.onPaint = function (ctx) {
 	        var timeSpan = new Date().getTime() - this.createTime.getTime();
 	        this.y = this.baseY + ~~(timeSpan / this.speedSpan);
-	        // if (this.y > config.height + this.height / 2) {
-	        //     this.alive = false;
-	        //     console.log('子弹失效...');
-	        //     return;
-	        // }
-	        // ctx.drawImage(this.img, 0, 0, this.img.width, this.img.height, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
 	        utils_1.imgSpirit(ctx, this.img, 300, this.createTime, true, 3, this.x - this.width * this.scale / 2, this.y - this.height * this.scale / 2, this.width * this.scale, this.height * this.scale);
 	    };
 	    return EnemyBullet;
@@ -1069,10 +1034,6 @@
 	var Shape_1 = __webpack_require__(5);
 	var utils_1 = __webpack_require__(2);
 	var Bullet_1 = __webpack_require__(7);
-	var img = new Image();
-	img.src = imgBase64_1.imgPlane;
-	var imghp = new Image();
-	imghp.src = imgBase64_1.imgHP;
 	/**
 	 * 飞机，打飞机~ 大哥哥这是什么？呀！好长！诶？！好滑哦(๑• . •๑)！阿呜～
 	 *
@@ -1084,7 +1045,7 @@
 	    __extends(Plane, _super);
 	    function Plane(x, y, width, height, scale) {
 	        var _this = _super.call(this, x, y, width, height, scale) || this;
-	        _this.img = img;
+	        _this.img = imgBase64_1.imgPlane;
 	        _this.imgSum = 11;
 	        _this.colourSpeed = 50;
 	        _this.realWidth = width * 0.5;
@@ -1118,12 +1079,6 @@
 	            bulletList.push(this.resetBullet(null, option[sumNow][0], option[sumNow][1]));
 	            sumNow++;
 	        }
-	        // let arr: Bullet[] = [];
-	        // let i = 0,
-	        //     len = option.length;
-	        // for (; i < len; i++) {
-	        //     arr = arr.concat(this.fireType(option[i][0], option[i][1]));
-	        // }
 	    };
 	    /**
 	     * 重置子弹类型
@@ -1148,23 +1103,6 @@
 	        }
 	        return bullet;
 	    };
-	    // private fireType(typeIndex: number, double: boolean = false): Bullet[] {
-	    //     let offsetArr = [8, 25, 50]; // 偏移量
-	    //     let arr: Bullet[] = [];
-	    //     if (double) {
-	    //         arr.push(new Bullet(this.x + offsetArr[typeIndex], this.y - this.height / 2, 96, 96, typeIndex, this.scale));
-	    //         arr.push(new Bullet(this.x - offsetArr[typeIndex], this.y - this.height / 2, 96, 96, typeIndex, this.scale));
-	    //     } else {
-	    //         arr.push(new Bullet(this.x, this.y - this.height / 2, 96, 96, typeIndex, this.scale));
-	    //     }
-	    //     return arr;
-	    // }
-	    // private drawBullets(ctx: CanvasRenderingContext2D): void {
-	    //     this.bullets = this.bullets.filter(n => n.alive);
-	    //     for (let i = 0, len = this.bullets.length; i < len; i++) {
-	    //         this.bullets[i].onPaint(ctx);
-	    //     }
-	    // }
 	    Plane.prototype.onPaint = function (ctx) {
 	        if (!this.alive)
 	            return;

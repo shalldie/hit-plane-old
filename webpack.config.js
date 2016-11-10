@@ -3,7 +3,7 @@ var path = require('path');
 
 module.exports = {
     entry: {
-        "hitplane-source": "./src/img/hitplane-source",
+        "hitplane-loading": "./src/hitplane-loading",
         "hitplane": './src/hitplane'
     },
     output: {

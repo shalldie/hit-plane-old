@@ -2,9 +2,6 @@ import { imgBoom } from './../img/imgBase64';
 import Shape from './Shape';
 import { imgSpirit } from './../utils/utils'
 
-let img = new Image();
-img.src = imgBoom;
-
 /**
  * 爆炸 ， 现充都去爆炸吧！！！
  * 
@@ -15,7 +12,7 @@ img.src = imgBoom;
 export default class Boom extends Shape {
     constructor(x: number, y: number, width: number, height: number, scale: number) {
         super(x, y, width, height, scale);
-        this.img = img;
+        this.img = imgBoom;
         this.imgSum = 14;
         this.colourSpeed = 40;
     }

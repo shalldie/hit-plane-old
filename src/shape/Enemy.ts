@@ -8,15 +8,6 @@ import { EnemyBullet } from './Bullet'
 
 import AI from '../logic/AI';
 
-let img = new Image();
-img.src = imgEnemy;
-
-while (!img.width);
-
-let imghp = new Image();
-imghp.src = imgHP;
-
-
 let areaArr = [  // 每种敌军飞机在图片中的坐标和宽高
     {
         x: 0,
@@ -96,7 +87,7 @@ export default class Enemy extends Shape {
         let height: number = width * area.h / area.w;
         super(x, y, width, height, scale);
         this.area = area;
-        this.img = img;
+        this.img = imgEnemy;
         this.HP = hp;
         this.maxHP = hp;
         // this.realWidth = width * this.scale;
@@ -160,6 +151,8 @@ export default class Enemy extends Shape {
      * @memberOf Enemy
      */
     public onPaint(ctx: CanvasRenderingContext2D): void {
+        if (!this.cacheCanvas) return;
+
         // this.ai.behave(this);
         let timeNow = new Date();
 
@@ -173,11 +166,11 @@ export default class Enemy extends Shape {
         // 血条
         imgDrawSingle(
             ctx,
-            imghp,
+            imgHP,
             0,
             0,
-            imghp.width,
-            imghp.height,
+            imgHP.width,
+            imgHP.height,
             this.x - this.width * this.scale / 2,
             this.y - this.height * this.scale / 2 - 20 * this.scale,
             this.width * this.scale * this.HP / this.maxHP,

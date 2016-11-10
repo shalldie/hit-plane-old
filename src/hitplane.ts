@@ -14,6 +14,8 @@ bg.style.height = ele.height + "px";
 
 let ctx = ele.getContext("2d");
 
+
+
 let logic = new Logic(ele.width, ele.height, ctx);
 
 logic.start();
@@ -51,6 +53,3 @@ else {
         ex.cancelBubble = true;
     });
 }
-
-var loading = document.getElementById('loading');
-loading && (loading.style.display = 'none');

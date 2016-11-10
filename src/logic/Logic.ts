@@ -67,7 +67,7 @@ export default class Logic {
             this.newEnemy();
             // console.log(that.bulletList.length);
         }.bind(this), 1500);
-        this.newEnemy();
+        // this.newEnemy();
         this.keepRefresh();
     }
 
@@ -231,40 +231,49 @@ export default class Logic {
         let enemy: Enemy;
         let boom: Boom;
 
-        // 绘制自身子弹
-        for (i = 0, len = this.bulletList.length; i < len; i++) {
-            bullet = this.bulletList[i];
-            if (bullet.alive) {
-                bullet.onPaint(this.ctx);
+        try {
+            // 绘制自身子弹
+            for (i = 0, len = this.bulletList.length; i < len; i++) {
+                bullet = this.bulletList[i];
+                if (bullet.alive) {
+                    bullet.onPaint(this.ctx);
+                }
             }
+
+            // 绘制敌军子弹
+            for (i = 0, len = this.enemyBulletList.length; i < len; i++) {
+                enemyBullet = this.enemyBulletList[i];
+                if (enemyBullet.alive) {
+                    enemyBullet.onPaint(this.ctx);
+                }
+            }
+
+            // 绘制敌军
+            for (i = 0, len = this.enemyList.length; i < len; i++) {
+                enemy = this.enemyList[i];
+                if (enemy.alive) {
+                    enemy.onPaint(this.ctx);
+                }
+            }
+
+
+            // 爆炸效果
+            for (i = 0, len = this.boomList.length; i < len; i++) {
+                boom = this.boomList[i];
+                if (boom.alive) {
+                    boom.onPaint(this.ctx);
+                }
+            }
+
+            // 绘制自身飞机
+            this.plane.onPaint(this.ctx);
+
+        }
+        catch (ex) {
+            console.log(ex);
+            throw ex;
         }
 
-        // 绘制敌军子弹
-        for (i = 0, len = this.enemyBulletList.length; i < len; i++) {
-            enemyBullet = this.enemyBulletList[i];
-            if (enemyBullet.alive) {
-                enemyBullet.onPaint(this.ctx);
-            }
-        }
-
-        // 绘制敌军
-        for (i = 0, len = this.enemyList.length; i < len; i++) {
-            enemy = this.enemyList[i];
-            if (enemy.alive) {
-                enemy.onPaint(this.ctx);
-            }
-        }
-
-        // 爆炸效果
-        for (i = 0, len = this.boomList.length; i < len; i++) {
-            boom = this.boomList[i];
-            if (boom.alive) {
-                boom.onPaint(this.ctx);
-            }
-        }
-
-        // 绘制自身飞机
-        this.plane.onPaint(this.ctx);
 
     }
 

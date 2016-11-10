@@ -3,12 +3,6 @@ import Shape from './Shape';
 import { imgSpirit, imgDrawSingle } from '../utils/utils';
 import { Bullet } from './Bullet';
 
-let img = new Image();
-img.src = imgPlane;
-
-let imghp = new Image();
-imghp.src = imgHP;
-
 
 /**
  * 飞机，打飞机~ 大哥哥这是什么？呀！好长！诶？！好滑哦(๑• . •๑)！阿呜～
@@ -34,7 +28,7 @@ export default class Plane extends Shape {
 
     constructor(x: number, y: number, width: number, height: number, scale: number) {
         super(x, y, width, height, scale);
-        this.img = img;
+        this.img = imgPlane;
         this.imgSum = 11;
         this.colourSpeed = 50;
         this.realWidth = width * 0.5;
@@ -72,15 +66,6 @@ export default class Plane extends Shape {
             sumNow++;
         }
 
-        // let arr: Bullet[] = [];
-        // let i = 0,
-        //     len = option.length;
-
-
-
-        // for (; i < len; i++) {
-        //     arr = arr.concat(this.fireType(option[i][0], option[i][1]));
-        // }
     }
 
     /**
@@ -104,25 +89,6 @@ export default class Plane extends Shape {
         }
         return bullet;
     }
-
-    // private fireType(typeIndex: number, double: boolean = false): Bullet[] {
-    //     let offsetArr = [8, 25, 50]; // 偏移量
-    //     let arr: Bullet[] = [];
-    //     if (double) {
-    //         arr.push(new Bullet(this.x + offsetArr[typeIndex], this.y - this.height / 2, 96, 96, typeIndex, this.scale));
-    //         arr.push(new Bullet(this.x - offsetArr[typeIndex], this.y - this.height / 2, 96, 96, typeIndex, this.scale));
-    //     } else {
-    //         arr.push(new Bullet(this.x, this.y - this.height / 2, 96, 96, typeIndex, this.scale));
-    //     }
-    //     return arr;
-    // }
-
-    // private drawBullets(ctx: CanvasRenderingContext2D): void {
-    //     this.bullets = this.bullets.filter(n => n.alive);
-    //     for (let i = 0, len = this.bullets.length; i < len; i++) {
-    //         this.bullets[i].onPaint(ctx);
-    //     }
-    // }
 
     public onPaint(ctx: CanvasRenderingContext2D): void {
         if (!this.alive) return;

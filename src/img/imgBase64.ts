@@ -4,17 +4,20 @@ declare var require: {
     ensure: (paths: string[], callback: (require: <T>(path: string) => T) => void) => void;
 };
 
-var source = JSON.parse(localStorage["hitplane-source"]);
+var source = window["hitplane_source"];
+export let imgPlane: HTMLImageElement = source["plane"];
 
-export let imgPlane: any = source["imgPlane"];
+export let imgBoom: HTMLImageElement = source["boom"];
 
-export let imgBoom: any = source["imgBoom"];
+export let imgBulletArr: HTMLImageElement[] = [
+    source["bullet01"],
+    source["bullet02"],
+    source["bullet03"],
+    source["enemy_bullet"]
+];
 
-export let imgBulletArr: any[] = source["imgBulletArr"];
+export let imgHP: HTMLImageElement = source["hp"]; // HP 图片
 
+export let imgEnemy: HTMLImageElement = source["enemy"]; // 敌军飞机图片
 
-export let imgHP: any = source["imgHP"]; // HP 图片
-
-export let imgEnemy: any = source["imgEnemy"]; // 敌军飞机图片
-
-export let imgHeart: any = source["imgHeart"]; // ❤️ 图片
+export let imgHeart: HTMLImageElement = source["heart"]; // ❤️ 图片
