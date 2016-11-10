@@ -6,8 +6,16 @@ import { imgSpirit } from '../utils/utils';  // 精灵渲染辅助方法
 
 let imgEleBulletArr = imgBulletArr.map(n => {
     let img = new Image();
+    let hasLoad = false;
     img.src = n;
-    // while (!img.width); // 首次加载模块，阻塞ui等待加载完全
+
+    img.onload = function () {
+        hasLoad = true;
+    }
+    if (img.complete) hasLoad = true;
+
+    while (!hasLoad);
+
     return img;
 });
 
@@ -94,36 +102,10 @@ export class Bullet extends Shape {
         let timeSpan = new Date().getTime() - this.createTime.getTime();
         this.y = this.baseY - ~~(timeSpan / this.speedSpan);
 
-        // if (!this.img.width) { // 图片未加载完全
-        //     return;
-        // }
-
-        // if(hasCached)
-
-
-        // if (this.y < -this.height) {
-        //     this.alive = false;
-        //     // console.log(`${+new Date}`);
-        //     // console.log(+new Date);
-        //     return;
-        // }
-
-        // ctx.drawImage(this.img, 0, 0, this.img.width, this.img.height, this.x - this.width * this.scale / 2, this.y - this.height * this.scale / 2, this.width * this.scale, this.height * this.scale);
-
-        // ctx.drawImage(
-        //     this.cacheCanvas, 0, 0,
-        //     this.cacheCanvas.width,
-        //     this.cacheCanvas.height,
-        //     this.x - this.cacheCanvas.width / 2,
-        //     this.y - this.cacheCanvas.height / 2,
-        //     this.cacheCanvas.width,
-        //     this.cacheCanvas.height);
-
         ctx.drawImage(
             this.cacheCanvas, this.x - this.realWidth / 2, this.y - this.realHeight / 2
         );
 
-        // ctx.strokeRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
     }
 }
 
