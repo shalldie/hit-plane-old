@@ -4,21 +4,17 @@ declare var require: {
     ensure: (paths: string[], callback: (require: <T>(path: string) => T) => void) => void;
 };
 
+var source = JSON.parse(localStorage["hitplane-source"]);
 
-export let imgPlane: any = require("!url!./plane.png");
+export let imgPlane: any = source["imgPlane"];
 
-export let imgBoom: any = require("!url!./boom.png");
+export let imgBoom: any = source["imgBoom"];
 
-export let imgBulletArr: any[] = [  // 子弹数组
-    require("!url!./bullet01.png"), // 基础子弹
-    require("!url!./bullet02.png"), // 二级子弹
-    require("!url!./bullet03.png"),  // 三级子弹
-    require("!url!./enemy_bullet.png")  // 敌军子弹
-];
+export let imgBulletArr: any[] = source["imgBulletArr"];
 
 
-export let imgHP: any = require("!url!./hp.png"); // HP 图片
+export let imgHP: any = source["imgHP"]; // HP 图片
 
-export let imgEnemy: any = require("!url!./enemy.png"); // 敌军飞机图片
+export let imgEnemy: any = source["imgEnemy"]; // 敌军飞机图片
 
-export let imgHeart: any = require("!url!./heart.png"); // ❤️ 图片
+export let imgHeart: any = source["imgHeart"]; // ❤️ 图片

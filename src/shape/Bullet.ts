@@ -6,15 +6,15 @@ import { imgSpirit } from '../utils/utils';  // 精灵渲染辅助方法
 
 let imgEleBulletArr = imgBulletArr.map(n => {
     let img = new Image();
-    let hasLoad = false;
+    // let hasLoad = false;
     img.src = n;
 
-    img.onload = function () {
-        hasLoad = true;
-    }
-    if (img.complete) hasLoad = true;
+    // img.onload = function () {
+    //     hasLoad = true;
+    // }
+    // if (img.complete) hasLoad = true;
 
-    while (!hasLoad);
+    // while (!hasLoad);
 
     return img;
 });

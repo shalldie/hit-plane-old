@@ -61,7 +61,7 @@ export default class Logic {
     }
 
     public start(): void {
-        let that = this;
+        // let that = this;
         this.newPlane();
         setInterval(function () {
             this.newEnemy();
