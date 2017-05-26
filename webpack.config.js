@@ -1,38 +1,48 @@
-// var webpack = require('webpack');
-var path = require('path');
+const path = require('path');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: {
-        "hitplane-loading": "./src/hitplane-loading",
-        "hitplane": './src/hitplane'
+        // "hitplane-loading": "./src/hitplane-loading",
+        "hitplane": './src/app'
     },
     output: {
-        path: './dist',
+        path: path.resolve('./dist'),
         filename: '[name].js'
     },
     module: {
-        loaders: [
+        rules: [
             {
-                text: /\.ts?$/,
+                test: /\.ts$/,
                 exclude: /node_modules/,
-                loader: 'ts'
+                use: ['babel-loader', 'ts-loader']
             },
-            { test: /\.css$/, loader: 'style!css' },
-            { test: /\.less$/, loader: 'style!css!less' },
-            { test: /\.jpg$|\.png$/, loader: 'url?limit=81920&name=[name].[ext]' }
-        ]
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: ['babel-loader']
+            },
+            {
+                test: /\.jpg$|\.png$/,
+                use: ['url-loader']
+            },
+            {
+                test: /\.scss$/,
+                exclude: /node_modules/,
+                use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader']
+            }]
     },
+    plugins: [
+        new HtmlWebpackPlugin({
+            filename: 'index.html',
+            template: './src/index.html',
+            inject: 'body',
+            hash: true,
+            minify: { removeComments: true, collapseWhitespace: true, minifyJS: true, minifyCSS: true }
+        })
+    ],
     resolve: {
-        root: path.join(__dirname, 'src'),
-        extensions: ['', '.ts', '.js', '.json', '.less', '.jpg', '.png'],
-        alias: { // 设置别名
-
-        }
-    },
-    // eslint: {
-    //     configFile: './.eslintrc'
-    // },
-    externals: {
-        // 'jQuery': 'jQuery'
+        extensions: ['.ts', '.js', '.json', '.scss', '.jpg', '.png']
     }
 };
