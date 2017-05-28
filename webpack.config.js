@@ -10,7 +10,7 @@ module.exports = {
     },
     output: {
         path: path.resolve('./dist'),
-        filename: '[name].js'
+        filename: 'js/[name].js'
     },
     module: {
         rules: [
@@ -28,6 +28,15 @@ module.exports = {
                 test: /\.scss$/,
                 exclude: /node_modules/,
                 use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader']
+            }, {
+                test: /\.(jpg|png|gif)$/,
+                use: [{
+                    loader: 'url-loader',
+                    options: {
+                        limit: 1,
+                        name: 'img/[name].[ext]'
+                    }
+                }]
             }]
     },
     plugins: [

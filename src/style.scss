@@ -21,7 +21,7 @@ body {
 #bg {
     display: block;
     box-sizing: border-box;
-    // background: url('img/bg.jpg') repeat-y;
+    background: url('img/bg.jpg') repeat-y;
     background-size: 100% 50%;
     animation: bgMove 20s linear infinite;
     z-index: 998;
