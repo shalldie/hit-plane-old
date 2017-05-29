@@ -1,8 +1,19 @@
+// declare var require: {
+//     <T>(path: string): T;
+//     (paths: string[], callback: (...modules: any[]) => void): void;
+//     ensure: (paths: string[], callback: (require: <T>(path: string) => T) => void) => void;
+// };
+declare function require(moduleName: string): any;
+
 // 加载样式
 import './style.scss';
 
+// 画布
+import './utils/resize';
+
 // 预加载图片
-let imgSrcArr = ["bg.jpg", "boom.png", "bullet01.png", "bullet02.png", "bullet03.png", "enemy.png", "enemy_bullet.png", "heart.png", "hp.png", "plane.png"];
+let imgSrcArr: string[] = ["bg.jpg", "boom.png", "bullet01.png", "bullet02.png", "bullet03.png", "enemy.png", "enemy_bullet.png", "heart.png", "hp.png", "plane.png"]
+// .map(n => require(`file-loader?name=[name].[ext]&context=./src/img/&outputPath=img/&publicPath=../!./img/${n}`));  // file-loader 好难 0.0
 
 let loadedImgCount: number = 0;
 
