@@ -8,9 +8,8 @@ body {
     overflow: hidden;
 }
 
-
 #bg,
-#demo{
+#demo {
     display: block;
     position: absolute;
     left: 50%;
@@ -19,20 +18,21 @@ body {
     z-index: 999;
 }
 
-#bg{
+#bg {
     display: block;
     box-sizing: border-box;
-    background: url('../src/img/bg.jpg') repeat-y;
+    background: url('img/bg.jpg') repeat-y;
     background-size: 100% 50%;
     animation: bgMove 20s linear infinite;
-    z-index: 998; /*只要998，口口口口抱回家 */
+    z-index: 998;
+    /*只要998，口口口口抱回家 */
 }
 
-@keyframes bgMove{
-    from{
+@keyframes bgMove {
+    from {
         background-position: 0% 0%;
     }
-    to{
+    to {
         background-position: 0 100%;
     }
 }
